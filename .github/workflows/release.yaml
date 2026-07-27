@@ -88,14 +88,29 @@ jobs:
 
       - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5
 
-      # Publishes an index to the gh-pages branch, which is what a Flux
-      # HelmRepository of type `default` consumes.
-      - name: Release chart to gh-pages
-        uses: helm/chart-releaser-action@cae68fefc6b5f367a0275617c9f83181ba54714f # v1.7.0
-        with:
-          charts_dir: charts
-        env:
-          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Publish the packaged chart and index to the gh-pages branch, which
+      # GitHub Pages serves and a Flux HelmRepository of type `default`
+      # consumes. This is a plain git push rather than chart-releaser: in this
+      # org the workflow token, despite being granted contents:write, gets
+      # "403 Resource not accessible by integration" from the releases API,
+      # and hosting the .tgz on Pages needs no releases at all.
+      - name: Publish chart to gh-pages
+        run: |
+          set -euo pipefail
+          helm package charts/cert-manager-webhook-porkbun -d /tmp/pages-drop
+          git fetch origin gh-pages
+          git worktree add /tmp/pages origin/gh-pages
+          cp /tmp/pages-drop/*.tgz /tmp/pages/
+          helm repo index /tmp/pages --url https://octabits-io.github.io/cert-manager-webhook-porkbun
+          cd /tmp/pages
+          git add -A
+          # Idempotent re-runs: an already-published version changes nothing.
+          if git diff --cached --quiet; then
+            echo "chart already published, nothing to do"
+          else
+            git commit -m "Publish chart for ${GITHUB_REF_NAME}"
+            git push origin HEAD:gh-pages
+          fi
 
       # Also publish as an OCI artifact, for HelmRepository type: oci.
       - name: Push chart to GHCR
