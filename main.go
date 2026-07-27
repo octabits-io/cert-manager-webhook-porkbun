@@ -1,5 +1,10 @@
 // Command cert-manager-webhook-porkbun runs an ACME DNS01 solver webhook for
 // domains hosted at Porkbun.
+//
+// The entry-point structure is derived from cert-manager/webhook-example
+// (Apache-2.0, Copyright The cert-manager Authors), by way of
+// Talinx/cert-manager-webhook-porkbun. Modified: the GROUP_NAME check reports
+// a usable message and a non-zero exit status instead of panicking. See NOTICE.
 package main
 
 import (

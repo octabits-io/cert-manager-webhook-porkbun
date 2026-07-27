@@ -1,6 +1,11 @@
 // Package porkbun implements a minimal, hardened client for the Porkbun DNS
 // API (https://porkbun.com/api/json/v3/documentation).
 //
+// The endpoint set and request shapes follow the client in
+// bcspragu/cert-manager-webhook-porkbun (Apache-2.0), by way of
+// Talinx/cert-manager-webhook-porkbun. The implementation here is new; the
+// list of fixes it embodies is in the paragraph below and in CHANGELOG.md.
+//
 // It exists rather than using github.com/nrdcg/porkbun because that client
 // does not expose the dns/retrieveByNameType endpoint, which lets us fetch
 // only the handful of TXT records we care about instead of listing an entire

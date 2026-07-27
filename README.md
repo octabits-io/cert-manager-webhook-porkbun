@@ -5,9 +5,15 @@ domains hosted at [Porkbun](https://porkbun.com/), which cert-manager has no
 built-in solver for. DNS-01 is what makes wildcard certificates possible.
 
 This is a maintained fork of
-[`talinx/cert-manager-webhook-porkbun`](https://github.com/talinx/cert-manager-webhook-porkbun)
-(itself a fork of `bcspragu/…`), which has been unmaintained since October 2024
-with issues disabled. See [what changed](#what-changed-from-upstream).
+[`Talinx/cert-manager-webhook-porkbun`](https://github.com/Talinx/cert-manager-webhook-porkbun),
+which has had no commits since October 2024 and has issues disabled. See
+[what changed](#what-changed-from-upstream) and
+[credits](#credits-and-license).
+
+If you are choosing between forks, note that
+[`pabloa/cert-manager-webhook-porkbun`](https://github.com/pabloa/cert-manager-webhook-porkbun)
+is also actively released and may suit you better — see
+[related work](#related-work) for an honest comparison.
 
 ---
 
@@ -247,8 +253,69 @@ make scan             # Trivy scan of the built image
 make test-conformance TEST_ZONE_NAME=example.com.   # needs real credentials
 ```
 
-## License
+## Related work
 
-Apache 2.0. See [LICENSE](LICENSE). Derived from
-`talinx/cert-manager-webhook-porkbun` and `bcspragu/cert-manager-webhook-porkbun`,
-themselves derived from `cert-manager/webhook-example`.
+[`pabloa/cert-manager-webhook-porkbun`](https://github.com/pabloa/cert-manager-webhook-porkbun)
+is another actively released fork of the same `Talinx` ancestor (v1.1.3, March
+2026). It was developed independently of this one, and it deserves credit for
+identifying the registered-domain-versus-DNS-zone problem before we did.
+
+The two forks differ in scope. `pabloa` is a focused set of changes on top of
+upstream: it adds zone detection and updates some dependencies, and keeps the
+rest as-is. This fork rewrites the API client and solver and reworks the chart.
+
+Concretely, as of `pabloa` v1.1.3:
+
+| | `Talinx` 1.0.0 | `pabloa` 1.1.3 | this fork |
+| --- | --- | --- | --- |
+| Delegated sub-zones | broken | fixed, by probing the API | fixed, via the public suffix list |
+| Nil-deref panic on a malformed response | yes | yes | fixed |
+| API error messages surfaced | no | no | fixed |
+| HTTP status checked before decoding | no | no | fixed |
+| Request timeout | none | none | 30s per request |
+| Retry on rate limiting | no | no | backoff with jitter |
+| Challenge TXT TTL | `60` | `60` | 600, configurable |
+| Config validated for ClusterIssuers | no | no | fixed |
+| Secret RBAC | cluster-wide `get,watch,list` | cluster-wide `get,watch,list` | namespaced `get` |
+| Runs as | root, Alpine | root, Alpine | uid 65532, distroless |
+| Trivy HIGH/CRITICAL in the image | 4 / 56 | 3 / 41 | 0 / 0 |
+| Unit tests | none | none | 81% coverage |
+
+Two notes in fairness to `pabloa`. Its zone probing asks Porkbun which domains
+actually exist, so it can resolve cases the public suffix list gets wrong —
+at the cost of one or two extra full-zone listings per challenge. And its
+dependency situation reflects a real problem, not neglect: a commit updating
+cert-manager and Kubernetes was reverted with *"Downgrade deps to cert-manager
+v1.11.3 + k8s v0.26.4 to fix startup crash"*. This fork runs cert-manager 1.21
+and Kubernetes 1.36 libraries, which required rebuilding against the current
+webhook API rather than bumping in place.
+
+If your zones are straightforward and you want the smallest delta from
+upstream, `pabloa` is a reasonable choice.
+
+## Credits and license
+
+Apache License 2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE).
+
+This project stands on other people's work:
+
+- **[cert-manager/webhook-example](https://github.com/cert-manager/webhook-example)**
+  — the cert-manager Authors, for the solver scaffold, the Helm chart layout
+  and the conformance harness that every DNS01 webhook is built on.
+- **[bcspragu/cert-manager-webhook-porkbun](https://github.com/bcspragu/cert-manager-webhook-porkbun)**
+  — for writing the original Porkbun integration.
+- **[Talinx/cert-manager-webhook-porkbun](https://github.com/Talinx/cert-manager-webhook-porkbun)**
+  — for packaging it into a Helm chart with release automation, which is what
+  made it usable in a real cluster. This repository forks that work directly.
+- **[baarde/cert-manager-webhook-ovh](https://github.com/baarde/cert-manager-webhook-ovh)**
+  — credited by the original author as an inspiration.
+- **[pabloa/cert-manager-webhook-porkbun](https://github.com/pabloa/cert-manager-webhook-porkbun)**
+  — for independently finding the sub-zone problem. No code from that fork is
+  used here.
+
+Files that remain closely derived from upstream carry a comment saying so, as
+Apache-2.0 section 4(b) requires. [NOTICE](NOTICE) records the full chain.
+
+This fork exists because upstream is unmaintained, not because of any fault in
+the original authors' work. Fixes here are offered back to anyone who wants
+them.

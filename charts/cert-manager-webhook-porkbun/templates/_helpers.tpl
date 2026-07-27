@@ -1,4 +1,13 @@
 {{/*
+Template helpers, taken essentially verbatim from
+Talinx/cert-manager-webhook-porkbun, which took them from
+cert-manager/webhook-example (Apache-2.0, Copyright The cert-manager Authors).
+
+Modified by Octabits: the naming helpers below are unchanged, because changing
+them would rename every rendered resource and break in-place upgrades. The
+`image` helper at the end of this file is new.
+*/}}
+{{/*
 Expand the name of the chart.
 */}}
 {{- define "cert-manager-webhook-porkbun.name" -}}

@@ -1,5 +1,12 @@
 // Package solver implements the cert-manager ACME DNS01 webhook solver for
 // Porkbun-hosted domains.
+//
+// The webhook.Solver shape comes from cert-manager/webhook-example
+// (Apache-2.0, Copyright The cert-manager Authors); the Porkbun challenge
+// logic originates in bcspragu/cert-manager-webhook-porkbun, by way of
+// Talinx/cert-manager-webhook-porkbun. This is a rewrite of that logic rather
+// than an edit of it, and the solver name and config keys are kept compatible
+// on purpose. See NOTICE and CHANGELOG.md.
 package solver
 
 import (

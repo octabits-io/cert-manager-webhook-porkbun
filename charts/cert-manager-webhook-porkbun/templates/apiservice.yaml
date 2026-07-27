@@ -1,3 +1,8 @@
+{{/*
+Derived from cert-manager/webhook-example (Apache-2.0, Copyright The
+cert-manager Authors) by way of Talinx/cert-manager-webhook-porkbun.
+Modified by Octabits — see NOTICE and CHANGELOG.md.
+*/}}
 apiVersion: apiregistration.k8s.io/v1
 kind: APIService
 metadata:

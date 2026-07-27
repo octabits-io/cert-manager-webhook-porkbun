@@ -1,5 +1,9 @@
 //go:build conformance
 
+// Derived from the conformance harness in cert-manager/webhook-example
+// (Apache-2.0, Copyright The cert-manager Authors). Modified: gated behind a
+// build tag, and given propagation limits that suit Porkbun's nameservers.
+//
 // The cert-manager DNS01 conformance suite drives a real ACME challenge
 // against a real Porkbun domain: it creates a TXT record, waits for it to
 // propagate to the authoritative nameservers, and deletes it again.
