@@ -1,0 +1,159 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # A dependency that was clean at release time may not be clean next month.
+  # The image this project forks from accumulated 5 critical / 38 high findings
+  # precisely because nothing ever re-checked it.
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  go:
+    name: Go
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Verify go.mod is tidy
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test -race -count=1 -coverprofile=coverage.out ./...
+
+      - name: Coverage summary
+        run: go tool cover -func=coverage.out | tail -1 >> "$GITHUB_STEP_SUMMARY"
+
+  lint:
+    name: golangci-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - uses: golangci/golangci-lint-action@v9
+        with:
+          version: latest
+
+  chart:
+    name: Helm chart
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: azure/setup-helm@v4
+
+      - name: Lint
+        run: helm lint charts/cert-manager-webhook-porkbun --set groupName=acme.example.org
+
+      - name: Render
+        run: |
+          helm template release charts/cert-manager-webhook-porkbun \
+            -n cert-manager --set groupName=acme.example.org > rendered.yaml
+
+      - name: Validate rendered manifests
+        uses: docker://ghcr.io/yannh/kubeconform:latest
+        with:
+          args: -strict -summary -ignore-missing-schemas rendered.yaml
+
+      - name: Reject a privileged container port
+        run: |
+          # Binding 443 would reintroduce the need to run as root or grant
+          # NET_BIND_SERVICE. The values schema must keep rejecting it.
+          if helm template release charts/cert-manager-webhook-porkbun \
+               --set groupName=acme.example.org --set securePort=443 >/dev/null 2>&1; then
+            echo "securePort=443 was accepted; the values schema no longer guards this"
+            exit 1
+          fi
+
+      - name: Reject list/watch on secrets
+        run: |
+          # The solver only performs `get`. If list or watch ever appear in the
+          # rendered RBAC, a compromised webhook could enumerate Secrets.
+          helm template release charts/cert-manager-webhook-porkbun \
+            -n cert-manager --set groupName=acme.example.org > r.yaml
+          if grep -A6 'resources:' r.yaml | grep -B2 'secrets' -A6 | grep -qE '^\s+-\s+(list|watch)$'; then
+            echo "rendered RBAC grants list/watch on secrets"
+            grep -B10 -A6 secrets r.yaml
+            exit 1
+          fi
+
+  image:
+    name: Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: cert-manager-webhook-porkbun:ci
+          build-args: VERSION=ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke test
+        run: |
+          # No GROUP_NAME must fail with a clear message rather than a panic.
+          out=$(docker run --rm cert-manager-webhook-porkbun:ci 2>&1 || true)
+          echo "$out"
+          echo "$out" | grep -q "GROUP_NAME must be set"
+
+          # The flags the chart passes must exist.
+          docker run --rm -e GROUP_NAME=acme.example.org \
+            cert-manager-webhook-porkbun:ci --help 2>&1 | grep -q -- "--secure-port"
+
+      - name: Assert the image runs as non-root
+        run: |
+          user=$(docker inspect cert-manager-webhook-porkbun:ci --format '{{.Config.User}}')
+          echo "image user: $user"
+          [ "$user" = "65532:65532" ]
+
+      - name: Scan image
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: cert-manager-webhook-porkbun:ci
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+          format: table
+
+  scan-source:
+    name: Dependency scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+          format: table

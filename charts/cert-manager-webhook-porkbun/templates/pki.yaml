@@ -1,0 +1,71 @@
+{{- $labels := include "cert-manager-webhook-porkbun.labels" . -}}
+# A self-signed Issuer used only to mint this webhook's own CA. This is
+# independent of the ACME issuers the webhook serves.
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ include "cert-manager-webhook-porkbun.selfSignedIssuer" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- $labels | nindent 4 }}
+spec:
+  selfSigned: {}
+---
+# The CA that signs the webhook's serving certificate.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "cert-manager-webhook-porkbun.rootCACertificate" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- $labels | nindent 4 }}
+spec:
+  secretName: {{ include "cert-manager-webhook-porkbun.rootCACertificate" . }}
+  duration: {{ .Values.pki.rootCA.duration }}
+  issuerRef:
+    name: {{ include "cert-manager-webhook-porkbun.selfSignedIssuer" . }}
+  commonName: "ca.porkbun.cert-manager"
+  isCA: true
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ include "cert-manager-webhook-porkbun.rootCAIssuer" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- $labels | nindent 4 }}
+spec:
+  ca:
+    secretName: {{ include "cert-manager-webhook-porkbun.rootCACertificate" . }}
+---
+# The certificate the webhook presents to the apiserver.
+#
+# renewBefore is set explicitly: without it a short-lived cluster can end up
+# serving an expired certificate, which surfaces as every DNS01 challenge
+# failing with a TLS error and no obvious cause.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "cert-manager-webhook-porkbun.servingCertificate" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- $labels | nindent 4 }}
+spec:
+  secretName: {{ include "cert-manager-webhook-porkbun.servingCertificate" . }}
+  duration: {{ .Values.pki.serving.duration }}
+  renewBefore: {{ .Values.pki.serving.renewBefore }}
+  issuerRef:
+    name: {{ include "cert-manager-webhook-porkbun.rootCAIssuer" . }}
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  dnsNames:
+    - {{ include "cert-manager-webhook-porkbun.fullname" . }}
+    - {{ include "cert-manager-webhook-porkbun.fullname" . }}.{{ .Release.Namespace }}
+    - {{ include "cert-manager-webhook-porkbun.fullname" . }}.{{ .Release.Namespace }}.svc
+    - {{ include "cert-manager-webhook-porkbun.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local

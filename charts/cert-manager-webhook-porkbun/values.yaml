@@ -1,0 +1,145 @@
+# The API group this webhook serves. It must match the `groupName` in the
+# dns01 webhook stanza of every Issuer/ClusterIssuer that uses this solver.
+#
+# Use a domain you control, so the group cannot collide with another webhook
+# installed in the same cluster.
+groupName: acme.example.com
+
+certManager:
+  # Namespace cert-manager itself runs in, and the ServiceAccount it uses.
+  # These are needed to grant cert-manager permission to call this webhook.
+  namespace: cert-manager
+  serviceAccountName: cert-manager
+
+image:
+  repository: ghcr.io/octabits-io/cert-manager-webhook-porkbun
+  # Defaults to the chart's appVersion. Prefer leaving this unset and letting
+  # the chart version pin the image, or set `digest` below for an immutable
+  # reference.
+  tag: ""
+  # Optional digest pin, e.g. "sha256:abc123...". Takes precedence over tag.
+  digest: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+# Port the webhook listens on inside the container.
+#
+# This is deliberately unprivileged. Binding 443 would require either running
+# as root or granting NET_BIND_SERVICE; neither is necessary, because the
+# Service still exposes 443 and forwards to this port.
+securePort: 8443
+
+# klog verbosity. 2 also logs zone-resolution decisions; 4 is very chatty.
+logLevel: 0
+
+# Extra arguments appended to the webhook command line.
+extraArgs: []
+
+serviceAccount:
+  create: true
+  # Defaults to the chart's fullname when empty.
+  name: ""
+  annotations: {}
+  automountServiceAccountToken: true
+
+rbac:
+  # How the webhook is granted read access to the Secrets holding Porkbun API
+  # credentials.
+  secretAccess:
+    # Namespaced (default) creates a Role in each relevant namespace.
+    # Cluster creates a ClusterRole granting read access to Secrets in every
+    # namespace — significantly more privilege, and only necessary if Issuers
+    # in arbitrary namespaces reference credentials this chart cannot enumerate.
+    scope: Namespaced
+
+    # Additional namespaces to grant access in, on top of the release
+    # namespace. Add the namespace of every namespaced Issuer that references
+    # a Porkbun credential Secret. Ignored when scope is Cluster.
+    #
+    # ClusterIssuers read their Secrets from cert-manager's
+    # --cluster-resource-namespace (the release namespace by default), which is
+    # already covered.
+    namespaces: []
+
+    # Restrict access to specific Secret names. Leave empty to allow any Secret
+    # in the granted namespaces. Recommended:
+    #   secretNames: ["porkbun-api-credentials"]
+    secretNames: []
+
+podAnnotations: {}
+podLabels: {}
+
+# Runs as the non-root uid baked into the distroless image.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  fsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  privileged: false
+  capabilities:
+    drop:
+      - ALL
+
+service:
+  type: ClusterIP
+  port: 443
+  annotations: {}
+
+# The webhook is almost entirely idle between challenges. No CPU limit is set
+# on purpose: CPU throttling here would only slow down certificate issuance.
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    memory: 128Mi
+
+livenessProbe:
+  httpGet:
+    scheme: HTTPS
+    path: /healthz
+    port: https
+  initialDelaySeconds: 10
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    scheme: HTTPS
+    path: /healthz
+    port: https
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+  # maxUnavailable: 1
+
+# Certificate lifetimes for the webhook's own serving chain.
+pki:
+  rootCA:
+    duration: 43800h # 5 years
+  serving:
+    duration: 8760h # 1 year
+    renewBefore: 720h # 30 days
+
+priorityClassName: ""
+nodeSelector: {}
+tolerations: []
+affinity: {}
+topologySpreadConstraints: []

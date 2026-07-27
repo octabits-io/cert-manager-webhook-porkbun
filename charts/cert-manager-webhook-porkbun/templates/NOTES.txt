@@ -1,0 +1,56 @@
+{{ .Chart.Name }} {{ .Chart.Version }} installed into namespace {{ .Release.Namespace }}.
+
+Serving API group: {{ .Values.groupName }}
+
+1. Check the webhook is registered and available:
+
+   kubectl get apiservice v1alpha1.{{ .Values.groupName }}
+
+2. Create a Secret with your Porkbun API credentials
+   (https://porkbun.com/account/api). API access must also be enabled per
+   domain, under Domain Management -> Details -> API Access.
+
+   kubectl -n {{ .Release.Namespace }} create secret generic porkbun-api-credentials \
+     --from-literal=api-key=pk1_xxx \
+     --from-literal=secret-key=sk1_xxx
+
+{{- if .Values.rbac.secretAccess.secretNames }}
+   The chart grants read access only to these Secret names:
+   {{ join ", " .Values.rbac.secretAccess.secretNames }}
+{{- end }}
+
+3. Point an Issuer at the solver:
+
+   apiVersion: cert-manager.io/v1
+   kind: ClusterIssuer
+   metadata:
+     name: letsencrypt-dns01
+   spec:
+     acme:
+       server: https://acme-v02.api.letsencrypt.org/directory
+       email: you@example.com
+       privateKeySecretRef:
+         name: letsencrypt-dns01-key
+       solvers:
+         - dns01:
+             webhook:
+               groupName: {{ .Values.groupName }}
+               solverName: porkbun
+               config:
+                 apiKey:
+                   name: porkbun-api-credentials
+                   key: api-key
+                 secretApiKey:
+                   name: porkbun-api-credentials
+                   key: secret-key
+
+{{- if eq .Values.groupName "acme.example.com" }}
+
+WARNING: groupName is still the chart default (acme.example.com). Set it to a
+domain you control, or it may collide with another webhook in this cluster.
+{{- end }}
+{{- if eq .Values.rbac.secretAccess.scope "Cluster" }}
+
+WARNING: rbac.secretAccess.scope is "Cluster", so this webhook can read Secrets
+in every namespace. Prefer "Namespaced" with rbac.secretAccess.namespaces.
+{{- end }}

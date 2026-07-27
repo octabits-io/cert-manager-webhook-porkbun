@@ -1,0 +1,19 @@
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: v1alpha1.{{ .Values.groupName }}
+  labels:
+    {{- include "cert-manager-webhook-porkbun.labels" . | nindent 4 }}
+  annotations:
+    # cert-manager's CA injector copies the root CA from the serving
+    # certificate's Secret into spec.caBundle, so the apiserver trusts us.
+    cert-manager.io/inject-ca-from: "{{ .Release.Namespace }}/{{ include "cert-manager-webhook-porkbun.servingCertificate" . }}"
+spec:
+  group: {{ .Values.groupName }}
+  groupPriorityMinimum: 1000
+  versionPriority: 15
+  service:
+    name: {{ include "cert-manager-webhook-porkbun.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+    port: {{ .Values.service.port }}
+  version: v1alpha1

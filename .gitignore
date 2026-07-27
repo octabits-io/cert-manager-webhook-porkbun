@@ -1,0 +1,10 @@
+/dist/
+/_out/
+/_test/
+coverage.out
+rendered.yaml
+
+# Real credentials for the conformance suite.
+testdata/porkbun/porkbun-api-credentials.yaml
+testdata/porkbun/*-credentials.yaml
+!testdata/porkbun/*.sample
