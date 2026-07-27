@@ -329,6 +329,35 @@ func TestPingReturnsIP(t *testing.T) {
 	}
 }
 
+// The credentials are in the request body, so following a redirect would
+// re-POST them to the redirect target. A 3xx must surface as an error and the
+// target must never be contacted.
+func TestRedirectsAreNotFollowed(t *testing.T) {
+	var leaked atomic.Int32
+	attacker := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		leaked.Add(1)
+		_, _ = io.WriteString(w, `{"status":"SUCCESS","records":[]}`)
+	}))
+	defer attacker.Close()
+
+	c := newTestClient(t, func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Location", attacker.URL)
+		w.WriteHeader(http.StatusTemporaryRedirect)
+	}, WithRetry(1, time.Millisecond))
+
+	_, err := c.RetrieveRecordsByNameType(context.Background(), "example.com", "TXT", "x")
+	if err == nil {
+		t.Fatal("expected an error for a redirect response")
+	}
+	var apiErr *APIError
+	if !errors.As(err, &apiErr) || apiErr.HTTPStatus != http.StatusTemporaryRedirect {
+		t.Fatalf("err = %v, want *APIError with http 307", err)
+	}
+	if got := leaked.Load(); got != 0 {
+		t.Errorf("redirect target received %d requests; credentials were forwarded", got)
+	}
+}
+
 func TestDefaultClientHasATimeout(t *testing.T) {
 	c := New("s", "a")
 	if c.httpClient.Timeout == 0 {

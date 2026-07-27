@@ -133,7 +133,9 @@ type Option func(*Client)
 
 // WithHTTPClient sets the HTTP client used for API calls. The client must
 // have a non-zero Timeout, or a stalled connection will hang the caller
-// indefinitely.
+// indefinitely. It should also refuse redirects (CheckRedirect returning
+// http.ErrUseLastResponse), because the API credentials are carried in the
+// request body and would be re-sent to a redirect target.
 func WithHTTPClient(c *http.Client) Option {
 	return func(cl *Client) {
 		if c != nil {
@@ -185,6 +187,14 @@ func New(secretAPIKey, apiKey string, opts ...Option) *Client {
 			// A bounded per-request timeout. The forked-from client used a
 			// zero-value http.Client, which has no timeout at all.
 			Timeout: 30 * time.Second,
+			// Refuse to follow redirects. The credentials travel in the
+			// request body, and Go's cross-host redirect protections strip
+			// sensitive *headers* only — a 307/308 to another host would
+			// re-POST both API keys there. The API never legitimately
+			// redirects, so surface the 3xx as an error instead.
+			CheckRedirect: func(*http.Request, []*http.Request) error {
+				return http.ErrUseLastResponse
+			},
 		},
 		maxAttempts: 4,
 		backoffBase: 500 * time.Millisecond,

@@ -35,6 +35,9 @@ replicaCount: 1
 securePort: 8443
 
 # klog verbosity. 2 also logs zone-resolution decisions; 4 is very chatty.
+# The schema caps this at 6: at v>=8 client-go logs full API response bodies,
+# which would write the Porkbun credential Secret's contents into pod logs on
+# every challenge.
 logLevel: 0
 
 # Extra arguments appended to the webhook command line.

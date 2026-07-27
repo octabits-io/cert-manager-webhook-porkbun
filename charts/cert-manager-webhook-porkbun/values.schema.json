@@ -41,7 +41,12 @@
       "maximum": 65535,
       "description": "Must stay unprivileged; the pod runs as a non-root user."
     },
-    "logLevel": { "type": "integer", "minimum": 0, "maximum": 10 },
+    "logLevel": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 6,
+      "description": "Capped at 6: client-go logs full API response bodies at v>=8, which would write the Porkbun credential Secret's data into pod logs on every challenge."
+    },
     "extraArgs": { "type": "array", "items": { "type": "string" } },
     "serviceAccount": {
       "type": "object",
