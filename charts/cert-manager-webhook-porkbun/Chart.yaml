@@ -4,10 +4,10 @@ description: cert-manager ACME DNS01 solver webhook for domains hosted at Porkbu
 type: application
 
 # Chart version. Bumped independently of appVersion.
-version: 2.0.0
+version: 2.0.1
 
 # Version of the webhook image this chart deploys by default.
-appVersion: "2.0.0"
+appVersion: "2.0.1"
 
 home: https://github.com/octabits-io/cert-manager-webhook-porkbun
 sources:

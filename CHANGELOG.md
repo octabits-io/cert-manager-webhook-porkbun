@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.0.1
+
+Security release. No functional changes.
+
+### Fixed
+
+- Dependency updates clearing two vulnerabilities that were reachable from the
+  webhook binary: CVE-2026-56852 / GO-2026-5970 (infinite loop in
+  `golang.org/x/text` normalization, HIGH) and GO-2026-5158 (uncapped baggage
+  header parsing in `go.opentelemetry.io/otel`). Also picks up
+  `cel-go` 0.29.0, clearing GHSA-gcjh-h69q-9w9g (not reachable from this
+  webhook). Bumps cert-manager to 1.21.1 and the k8s.io modules to 0.36.3.
+
 ## 2.0.0
 
 First release of this fork, based on
