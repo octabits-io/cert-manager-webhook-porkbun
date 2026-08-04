@@ -17,6 +17,7 @@ jobs:
       packages: write
       id-token: write # keyless signing
       attestations: write
+      artifact-metadata: write # attestation storage records
     outputs:
       digest: ${{ steps.build.outputs.digest }}
     steps:
