@@ -6,8 +6,31 @@ entries:
       artifacthub.io/license: Apache-2.0
       artifacthub.io/prerelease: "false"
     apiVersion: v2
+    appVersion: 2.0.1
+    created: "2026-08-04T12:10:11.979365027Z"
+    description: cert-manager ACME DNS01 solver webhook for domains hosted at Porkbun
+    digest: ac498d4fc5611ef113b1b2efb8eb5aa3ef9892af860b0879f1f3368169144b34
+    home: https://github.com/octabits-io/cert-manager-webhook-porkbun
+    keywords:
+    - cert-manager
+    - acme
+    - dns01
+    - porkbun
+    - letsencrypt
+    name: cert-manager-webhook-porkbun
+    sources:
+    - https://github.com/octabits-io/cert-manager-webhook-porkbun
+    type: application
+    urls:
+    - https://octabits-io.github.io/cert-manager-webhook-porkbun/cert-manager-webhook-porkbun-2.0.1.tgz
+    version: 2.0.1
+  - annotations:
+      artifacthub.io/containsSecurityUpdates: "true"
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/prerelease: "false"
+    apiVersion: v2
     appVersion: 2.0.0
-    created: "2026-07-27T20:16:35.469645+02:00"
+    created: "2026-08-04T12:10:11.978779263Z"
     description: cert-manager ACME DNS01 solver webhook for domains hosted at Porkbun
     digest: 288f167ffbad7517afa483cb5b0693884d67e72816ae4aa7cabf1dfbaa5c81bb
     home: https://github.com/octabits-io/cert-manager-webhook-porkbun
@@ -24,4 +47,4 @@ entries:
     urls:
     - https://octabits-io.github.io/cert-manager-webhook-porkbun/cert-manager-webhook-porkbun-2.0.0.tgz
     version: 2.0.0
-generated: "2026-07-27T20:16:35.468784+02:00"
+generated: "2026-08-04T12:10:11.978000505Z"
