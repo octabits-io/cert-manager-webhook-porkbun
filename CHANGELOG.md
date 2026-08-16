@@ -1,5 +1,37 @@
 # Changelog
 
+## 2.0.2
+
+Maintenance release. No functional changes to the solver.
+
+### Security
+
+- `golang.org/x/net` 0.58.0, carrying a `dnsmessage` bounds fix, with
+  `x/crypto` 0.55.0, `x/mod` 0.38.0, `x/text` 0.41.0 and `x/tools` 0.48.0
+  following as its transitive minimums. No advisory was outstanding against
+  2.0.1; this is a refresh, not a fix for a known-reachable vulnerability.
+- The runtime base moves to `gcr.io/distroless/static-debian13:nonroot`,
+  refreshing the CA bundle vintage. The image still contains only that bundle,
+  `/etc/passwd` and tzdata.
+
+### Changed
+
+- The same `x/net` bump refreshes the public suffix list that registered-domain
+  detection depends on, so newly delegated suffixes resolve correctly.
+
+### Added
+
+- Chart metadata for discoverability: keywords, maintainers, an icon, and the
+  `artifacthub.io` category, images, links and changes annotations.
+- A landing page served at the Helm repository URL, which was previously a 404
+  in a browser. It carries the install instructions, an Open Graph card and
+  schema.org metadata.
+
+### Fixed
+
+- The release job now has `artifact-metadata: write`, so image provenance
+  attestations are stored rather than failing at the end of a successful build.
+
 ## 2.0.1
 
 Security release. No functional changes.
