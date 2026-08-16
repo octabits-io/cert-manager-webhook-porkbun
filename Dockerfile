@@ -37,7 +37,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 # The `nonroot` variant runs as uid 65532. The webhook therefore cannot bind a
 # privileged port, so it defaults to 8443 rather than 443 and needs no
 # NET_BIND_SERVICE capability.
-FROM gcr.io/distroless/static-debian12:nonroot
+FROM gcr.io/distroless/static-debian13:nonroot
 
 COPY --from=build /out/webhook /webhook
 
