@@ -2,12 +2,78 @@ apiVersion: v1
 entries:
   cert-manager-webhook-porkbun:
   - annotations:
+      artifacthub.io/alternativeName: porkbun-webhook
+      artifacthub.io/category: security
+      artifacthub.io/changes: |
+        - kind: security
+          description: Refresh golang.org/x/net to v0.58.0 and move the runtime base to distroless/static-debian13
+        - kind: changed
+          description: Refresh the public suffix list that registered-domain detection depends on, via the x/net bump
+        - kind: added
+          description: Chart keywords, maintainers, icon and Artifact Hub annotations
+        - kind: added
+          description: A landing page at the Helm repository URL, which was previously a 404
+        - kind: fixed
+          description: Publish image attestations, which the release job lacked permission to store
+      artifacthub.io/containsSecurityUpdates: "true"
+      artifacthub.io/images: |
+        - name: cert-manager-webhook-porkbun
+          image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.2
+          platforms:
+            - linux/amd64
+            - linux/arm64
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun
+        - name: support
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun/issues
+        - name: changelog
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun/blob/main/CHANGELOG.md
+        - name: container image
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun/pkgs/container/cert-manager-webhook-porkbun
+      artifacthub.io/operator: "false"
+      artifacthub.io/prerelease: "false"
+    apiVersion: v2
+    appVersion: 2.0.2
+    created: "2026-08-16T21:24:02.497611218Z"
+    description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun,
+      for Let's Encrypt wildcard certificates
+    digest: 5e4f474d84ac15e6e38bd336f2eb1c039fed3353ecc80c009e4b3052616a5731
+    home: https://github.com/octabits-io/cert-manager-webhook-porkbun
+    icon: https://octabits-io.github.io/cert-manager-webhook-porkbun/favicon.svg
+    keywords:
+    - cert-manager
+    - cert-manager-webhook
+    - acme
+    - dns01
+    - dns-01
+    - porkbun
+    - letsencrypt
+    - lets-encrypt
+    - wildcard-certificate
+    - tls
+    - certificates
+    - webhook
+    - solver
+    maintainers:
+    - email: contact@dk2.de
+      name: Daniel Hartmann
+      url: https://github.com/octabits-io
+    name: cert-manager-webhook-porkbun
+    sources:
+    - https://github.com/octabits-io/cert-manager-webhook-porkbun
+    type: application
+    urls:
+    - https://octabits-io.github.io/cert-manager-webhook-porkbun/cert-manager-webhook-porkbun-2.0.2.tgz
+    version: 2.0.2
+  - annotations:
       artifacthub.io/containsSecurityUpdates: "true"
       artifacthub.io/license: Apache-2.0
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 2.0.1
-    created: "2026-08-04T12:10:11.979365027Z"
+    created: "2026-08-16T21:24:02.49707265Z"
     description: cert-manager ACME DNS01 solver webhook for domains hosted at Porkbun
     digest: ac498d4fc5611ef113b1b2efb8eb5aa3ef9892af860b0879f1f3368169144b34
     home: https://github.com/octabits-io/cert-manager-webhook-porkbun
@@ -30,7 +96,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 2.0.0
-    created: "2026-08-04T12:10:11.978779263Z"
+    created: "2026-08-16T21:24:02.496598799Z"
     description: cert-manager ACME DNS01 solver webhook for domains hosted at Porkbun
     digest: 288f167ffbad7517afa483cb5b0693884d67e72816ae4aa7cabf1dfbaa5c81bb
     home: https://github.com/octabits-io/cert-manager-webhook-porkbun
@@ -47,4 +113,4 @@ entries:
     urls:
     - https://octabits-io.github.io/cert-manager-webhook-porkbun/cert-manager-webhook-porkbun-2.0.0.tgz
     version: 2.0.0
-generated: "2026-08-04T12:10:11.978000505Z"
+generated: "2026-08-16T21:24:02.495983487Z"
