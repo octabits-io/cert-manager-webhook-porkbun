@@ -1,0 +1,22 @@
+# Artifact Hub repository metadata.
+#
+# This file is published to the root of the gh-pages branch by
+# .github/workflows/release.yaml, so that it is served next to index.yaml —
+# Artifact Hub only looks for it at the repository URL's path.
+#
+# `owners` lets an Artifact Hub account claim ownership of the repository; the
+# email must match the one on that account. Ownership claims are processed
+# immediately.
+#
+# `repositoryID` is what earns the "Verified Publisher" badge. It is only
+# issued once the repository has been added at
+# https://artifacthub.io/control-panel/repositories — add the repo with URL
+# https://octabits-io.github.io/cert-manager-webhook-porkbun, copy the ID from
+# the repository's row, uncomment the line below and cut a release. It is not a
+# secret.
+#
+# repositoryID: <uuid from the Artifact Hub control panel>
+
+owners:
+  - name: Daniel Hartmann
+    email: contact@dk2.de

@@ -1,0 +1,633 @@
+<!doctype html>
+<!--
+  Landing page for the Helm repository served from gh-pages.
+
+  Without it, https://octabits-io.github.io/cert-manager-webhook-porkbun/ is a
+  404: `helm repo add` fetches index.yaml directly and never needs an index.html,
+  so the one URL people paste into a browser shows nothing. This is also the only
+  page of the project a search engine can index that is not a GitHub repo page.
+
+  The colour tokens are named for their role, not their value: `--white` is the
+  strongest text and `--black` is the page ground, which is why the two look
+  inverted in the light theme. Dark is the base and light is the override.
+
+  The head carries one social card on both og:image and twitter:image, a
+  description that matches the sentence the README opens with, a canonical URL,
+  JSON-LD and a sitemap.
+
+  Published by .github/workflows/release.yaml. Keep it self-contained: no build
+  step and no external request, which is also why the type is a system font
+  stack rather than a hosted face.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>cert-manager-webhook-porkbun — Porkbun DNS-01 solver for cert-manager</title>
+    <meta
+      name="description"
+      content="A cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun. Wildcard certificates from Let's Encrypt, a hardened Helm chart, and no cluster-wide Secret access."
+    />
+    <link rel="canonical" href="https://octabits-io.github.io/cert-manager-webhook-porkbun/" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#0b1411" />
+
+    <meta property="og:site_name" content="octabits" />
+    <meta property="og:locale" content="en" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://octabits-io.github.io/cert-manager-webhook-porkbun/" />
+    <meta property="og:title" content="cert-manager-webhook-porkbun" />
+    <meta
+      property="og:description"
+      content="A cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun. Wildcard certificates from Let's Encrypt, a hardened Helm chart, and no cluster-wide Secret access."
+    />
+    <!-- The same card the repository uses as its social preview. -->
+    <meta
+      property="og:image"
+      content="https://octabits-io.github.io/cert-manager-webhook-porkbun/social-preview.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="cert-manager-webhook-porkbun — a cert-manager ACME DNS-01 solver webhook for Porkbun"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="cert-manager-webhook-porkbun" />
+    <meta
+      name="twitter:description"
+      content="A cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun. Wildcard certificates from Let's Encrypt, a hardened Helm chart, and no cluster-wide Secret access."
+    />
+    <meta
+      name="twitter:image"
+      content="https://octabits-io.github.io/cert-manager-webhook-porkbun/social-preview.png"
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "SoftwareSourceCode",
+            "name": "cert-manager-webhook-porkbun",
+            "description": "A cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun, packaged as a Helm chart.",
+            "codeRepository": "https://github.com/octabits-io/cert-manager-webhook-porkbun",
+            "programmingLanguage": "Go",
+            "license": "https://www.apache.org/licenses/LICENSE-2.0",
+            "url": "https://octabits-io.github.io/cert-manager-webhook-porkbun/",
+            "author": { "@type": "Organization", "name": "octabits" }
+          },
+          {
+            "@type": "SoftwareApplication",
+            "name": "cert-manager-webhook-porkbun",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Kubernetes",
+            "softwareVersion": "2.0.1",
+            "url": "https://octabits-io.github.io/cert-manager-webhook-porkbun/",
+            "downloadUrl": "https://octabits-io.github.io/cert-manager-webhook-porkbun/index.yaml",
+            "license": "https://www.apache.org/licenses/LICENSE-2.0",
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+          }
+        ]
+      }
+    </script>
+
+    <style>
+      /*
+       * A near-black with a green cast rather than a neutral grey, and #6fd3a3
+       * as the accent. The greyscale is tinted to match; the neutral one reads
+       * cold against the accent.
+       *
+       * Dark is defined on :root and light is the override, so the page has a
+       * complete palette even where prefers-color-scheme is unset.
+       */
+      :root {
+        --green: #6fd3a3;
+        --green-deep: #16794a;
+
+        --accent-low: #0e3a26;
+        --accent: #2f9b6a;
+        --accent-high: #8ee0b8;
+
+        /* Green-tinted greyscale — the neutral one reads cold against the accent. */
+        --white: #e8f2ed;
+        --gray-1: #d7e6df;
+        --gray-2: #9db3aa;
+        --gray-3: #6b8579;
+        --gray-4: #3d5349;
+        --gray-5: #24352e;
+        --gray-6: #16241f;
+        --gray-7: #101b17;
+        --black: #0b1411;
+
+        --bg-inline-code: #16241f;
+        --hairline-light: #24352e;
+        --hairline: #1a2823;
+        --edge: #2f6b52;
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          --accent-low: #c7f0dc;
+          --accent: #10683f;
+          --accent-high: #06301d;
+
+          --white: #0b1411;
+          --gray-1: #16241f;
+          --gray-2: #35463f;
+          --gray-3: #5c7a6d;
+          --gray-4: #8aa298;
+          --gray-5: #cfe0d8;
+          --gray-6: #e8f2ed;
+          --gray-7: #f2f8f5;
+          --black: #fbfdfc;
+
+          --bg-inline-code: #e8f2ed;
+          --hairline-light: #d3e3db;
+          --hairline: #e2eee8;
+          --edge: #93c9b0;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--black);
+        color: var(--gray-2);
+        font-family:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /*
+       * The card's radial glow, reused as a page wash. Fixed and behind
+       * everything, so it stays put while the content scrolls.
+       */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        background:
+          radial-gradient(1100px 560px at 80% 0%, rgba(22, 121, 74, 0.26), transparent 64%),
+          radial-gradient(760px 460px at 2% 100%, rgba(22, 121, 74, 0.14), transparent 60%);
+      }
+      @media (prefers-color-scheme: light) {
+        body::before {
+          background:
+            radial-gradient(1100px 520px at 78% 0%, rgba(22, 121, 74, 0.12), transparent 62%),
+            radial-gradient(760px 460px at 4% 100%, rgba(22, 121, 74, 0.07), transparent 60%);
+        }
+      }
+
+      .container {
+        max-width: 72rem;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+      }
+      @media (min-width: 50rem) {
+        .container {
+          padding: 0 2rem;
+        }
+      }
+
+      a {
+        color: var(--accent-high);
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      }
+
+      /* --- header --------------------------------------------------------- */
+      header.site {
+        border-bottom: 1px solid var(--hairline);
+      }
+      header.site .container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem 1.5rem;
+        min-height: 4rem;
+        flex-wrap: wrap;
+      }
+      .wordmark {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--white);
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .wordmark svg {
+        color: var(--accent-high);
+        width: 28px;
+        height: 28px;
+      }
+      nav.site {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0 1.5rem;
+      }
+      nav.site a {
+        color: var(--gray-2);
+        text-decoration: none;
+        font-size: 0.9375rem;
+      }
+      nav.site a:hover {
+        color: var(--accent-high);
+      }
+
+      /* --- hero ----------------------------------------------------------- */
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 3.5rem;
+        padding: 3.5rem 0 4.5rem;
+      }
+      .hero__eyebrow {
+        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        font-size: 1.05rem;
+        color: var(--accent-high);
+        margin: 0 0 1.1rem;
+      }
+      .hero__title {
+        font-size: clamp(2.1rem, 4.6vw, 3.6rem);
+        line-height: 1.1;
+        letter-spacing: -0.028em;
+        font-weight: 700;
+        color: var(--white);
+        margin: 0;
+        max-width: 17ch;
+      }
+      .hero__title em {
+        font-style: normal;
+        color: var(--accent-high);
+      }
+      .hero__sub {
+        margin: 1.3rem 0 0;
+        font-size: clamp(1rem, 1.5vw, 1.25rem);
+        line-height: 1.5;
+        color: var(--gray-2);
+        max-width: 38ch;
+      }
+      .hero__tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1.7rem;
+      }
+      .hero__tags span {
+        font-size: 0.85rem;
+        color: var(--gray-2);
+        border: 1px solid color-mix(in srgb, var(--green) 34%, transparent);
+        background: color-mix(in srgb, var(--green-deep) 12%, transparent);
+        border-radius: 999px;
+        padding: 0.35rem 0.85rem;
+        white-space: nowrap;
+      }
+      .hero__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 2.1rem;
+      }
+      .btn {
+        display: inline-block;
+        padding: 0.7rem 1.4rem;
+        border-radius: 999px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--white);
+        border: 1px solid var(--gray-5);
+      }
+      .btn:hover {
+        border-color: var(--accent);
+      }
+      .btn--primary {
+        background: var(--accent-high);
+        border-color: var(--accent-high);
+        color: var(--black);
+      }
+      .btn--primary:hover {
+        filter: brightness(1.08);
+      }
+
+      .hero__figure {
+        width: 360px;
+        height: auto;
+      }
+      .hero__figure text {
+        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        font-size: 15px;
+        fill: var(--gray-3);
+      }
+      .hero__figure .note {
+        fill: var(--gray-4);
+      }
+
+      /* Stack on narrow screens: copy first, then the figure centred under it. */
+      @media (max-width: 50rem) {
+        .hero {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 2.5rem;
+          padding: 2rem 0 3rem;
+        }
+        .hero__figure {
+          width: min(320px, 90%);
+          margin-inline: auto;
+        }
+        .hero__title,
+        .hero__sub {
+          max-width: none;
+        }
+      }
+
+      /* --- sections ------------------------------------------------------- */
+      section {
+        border-top: 1px solid var(--hairline);
+        padding: 3.5rem 0;
+      }
+      h2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--white);
+        margin: 0 0 1.5rem;
+      }
+      section > .container > p {
+        max-width: 62ch;
+      }
+
+      /* Feature cards read as panels, like the card's pills. */
+      .cards {
+        display: grid;
+        gap: 1.25rem;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 46rem) {
+        .cards {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      .card {
+        background: color-mix(in srgb, var(--gray-6) 55%, transparent);
+        border: 1px solid color-mix(in srgb, var(--green) 22%, transparent);
+        border-radius: 0.5rem;
+        padding: 1.25rem 1.4rem;
+      }
+      .card h3 {
+        margin: 0 0 0.5rem;
+        font-size: 1.0625rem;
+        color: var(--white);
+      }
+      .card p {
+        margin: 0;
+        font-size: 0.9375rem;
+      }
+
+      pre {
+        background: var(--gray-7);
+        border: 1px solid var(--hairline-light);
+        border-radius: 0.5rem;
+        color: var(--gray-1);
+        padding: 1.25rem;
+        overflow-x: auto;
+        font-size: 0.8125rem;
+        line-height: 1.6;
+        margin: 0 0 1.25rem;
+        max-width: 62rem;
+      }
+      :is(p, li) code {
+        background: var(--bg-inline-code);
+        border-radius: 4px;
+        padding: 0.1em 0.35em;
+        font-size: 0.875em;
+        color: var(--gray-1);
+      }
+
+      ul.links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-width: 52rem;
+      }
+      ul.links li {
+        padding: 0.625rem 0;
+        border-bottom: 1px solid var(--hairline);
+        font-size: 0.9375rem;
+      }
+      ul.links li:last-child {
+        border-bottom: 0;
+      }
+
+      footer.site {
+        border-top: 1px solid var(--hairline);
+        padding: 2.5rem 0 3.5rem;
+        font-size: 0.875rem;
+        color: var(--gray-3);
+      }
+      footer.site p {
+        margin: 0 0 0.5rem;
+        max-width: 68ch;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="site">
+      <div class="container">
+        <a class="wordmark" href="./">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <path d="M16 5 L25 8.5 v6.9 c0 4.6 -3.6 8.2 -9 9.6 -5.4 -1.4 -9 -5 -9 -9.6 V8.5 Z" />
+              <path d="m12 16 3 3 5.5 -5.8" />
+            </g>
+          </svg>
+          cert-manager-webhook-porkbun
+        </a>
+        <nav class="site">
+          <a href="#install">Install</a>
+          <a href="#why">Why this fork</a>
+          <a href="https://github.com/octabits-io/cert-manager-webhook-porkbun#readme">Docs</a>
+          <a href="https://github.com/octabits-io/cert-manager-webhook-porkbun">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="hero">
+        <div class="hero__copy">
+          <p class="hero__eyebrow">cert-manager-webhook-porkbun</p>
+          <h1 class="hero__title">Wildcard certificates for domains at <em>Porkbun</em>.</h1>
+          <p class="hero__sub">
+            cert-manager ships no solver for Porkbun. This webhook adds one, so Let's Encrypt can
+            answer DNS-01 challenges against your zones — the only challenge type that issues a
+            wildcard.
+          </p>
+          <div class="hero__tags">
+            <span>Helm chart</span>
+            <span>DNS-01 solver</span>
+            <span>cosign-signed images</span>
+            <span>Apache-2.0</span>
+          </div>
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="#install">Install →</a>
+            <a class="btn" href="#why">Why this fork</a>
+            <a class="btn" href="https://github.com/octabits-io/cert-manager-webhook-porkbun"
+              >GitHub</a
+            >
+          </div>
+        </div>
+
+        <svg
+          class="hero__figure"
+          viewBox="0 0 360 372"
+          fill="none"
+          role="img"
+          aria-label="A DNS-01 challenge: cert-manager calls the webhook, the webhook calls the Porkbun API, and the API writes an _acme-challenge TXT record that Let's Encrypt then reads"
+        >
+          <g stroke="var(--edge)" stroke-width="3" stroke-linecap="round">
+            <path d="M54 74 L54 128" />
+            <path d="M54 172 L54 226" />
+            <path d="M54 270 L54 324" />
+          </g>
+          <circle cx="54" cy="48" r="26" fill="var(--black)" stroke="var(--green)" stroke-width="3.5" />
+          <circle cx="54" cy="150" r="22" fill="var(--green)" />
+          <circle cx="54" cy="248" r="22" fill="var(--green)" />
+          <circle cx="54" cy="350" r="22" fill="var(--black)" stroke="var(--green)" stroke-width="3.5" />
+          <text x="100" y="54">cert-manager</text>
+          <text x="100" y="156">this webhook</text>
+          <text x="100" y="254">Porkbun API</text>
+          <!-- Both lines have to clear x=360; the longer wording overran the viewBox. -->
+          <text x="100" y="350">_acme-challenge TXT</text>
+          <text x="100" y="368" class="note">Let's Encrypt reads it</text>
+        </svg>
+      </div>
+    </div>
+
+    <section id="install">
+      <div class="container">
+        <h2>Install</h2>
+        <pre><code>helm repo add octabits https://octabits-io.github.io/cert-manager-webhook-porkbun
+helm repo update
+
+helm install cert-manager-webhook-porkbun octabits/cert-manager-webhook-porkbun \
+  --namespace cert-manager \
+  --set groupName=acme.example.com \
+  --set 'rbac.secretAccess.secretNames={porkbun-api-credentials}'</code></pre>
+        <p>
+          Also published as an OCI artifact at
+          <code>oci://ghcr.io/octabits-io/charts/cert-manager-webhook-porkbun</code>. Credentials,
+          the <code>ClusterIssuer</code> and <code>Certificate</code> examples, the solver options
+          and every chart value are in the
+          <a href="https://github.com/octabits-io/cert-manager-webhook-porkbun#readme">README</a>.
+        </p>
+        <p>
+          <strong>The one that catches everybody:</strong> Porkbun disables API access per domain by
+          default. Enable it under Domain Management → Details → API Access, or the API returns an
+          error that never mentions the setting.
+        </p>
+      </div>
+    </section>
+
+    <section id="why">
+      <div class="container">
+        <h2>Why this fork</h2>
+        <div class="cards">
+          <div class="card">
+            <h3>No cluster-wide Secret access</h3>
+            <p>
+              Upstream bound a ClusterRole granting <code>get,watch,list</code> on every Secret in
+              the cluster. Access here is a namespaced Role, <code>get</code> only, optionally
+              restricted to named Secrets.
+            </p>
+          </div>
+          <div class="card">
+            <h3>It stops falling over</h3>
+            <p>
+              A malformed response used to panic the pod, requests had no timeout at all, and API
+              errors surfaced with Porkbun's message field stripped out. All fixed, each with a test.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Delegated sub-zones work</h3>
+            <p>
+              The Porkbun API is addressed by registered domain, not by DNS zone. The solver derives
+              one from the other using the public suffix list, so a challenge in a delegated
+              sub-zone resolves correctly.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Hardened by default</h3>
+            <p>
+              Distroless, uid 65532, read-only root filesystem, all capabilities dropped —
+              compatible with the <code>restricted</code> Pod Security Standard. Images are signed
+              with cosign and carry SBOM and provenance attestations.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2>Links</h2>
+        <ul class="links">
+          <li>
+            <a href="https://github.com/octabits-io/cert-manager-webhook-porkbun">Source</a> —
+            GitHub, Apache-2.0
+          </li>
+          <li>
+            <a href="https://github.com/octabits-io/cert-manager-webhook-porkbun/issues">Issues</a> —
+            bug reports and questions
+          </li>
+          <li>
+            <a
+              href="https://github.com/octabits-io/cert-manager-webhook-porkbun/blob/main/CHANGELOG.md"
+              >Changelog</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://github.com/octabits-io/cert-manager-webhook-porkbun/pkgs/container/cert-manager-webhook-porkbun"
+              >Container image</a
+            >
+            — ghcr.io, multi-arch, signed
+          </li>
+          <li>
+            <a href="./index.yaml">index.yaml</a> — the Helm repository index this page sits next to
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="site">
+      <div class="container">
+        <p>
+          Apache-2.0. A maintained fork of
+          <a href="https://github.com/Talinx/cert-manager-webhook-porkbun"
+            >Talinx/cert-manager-webhook-porkbun</a
+          >, which stands in turn on
+          <a href="https://github.com/cert-manager/webhook-example">cert-manager/webhook-example</a>
+          and
+          <a href="https://github.com/bcspragu/cert-manager-webhook-porkbun"
+            >bcspragu/cert-manager-webhook-porkbun</a
+          >.
+        </p>
+        <p>Not affiliated with Porkbun, Let's Encrypt or the cert-manager project.</p>
+      </div>
+    </footer>
+  </body>
+</html>

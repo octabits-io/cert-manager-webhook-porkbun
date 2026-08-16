@@ -1,0 +1,157 @@
+<!doctype html>
+<!--
+  Source for pages/social-preview.png. Rendered once at 1200x630 and committed
+  as a PNG — kept so the card can be regenerated when the wording changes,
+  rather than being redrawn from memory.
+
+  It lives in hack/ rather than pages/ deliberately: everything under pages/ is
+  copied to the gh-pages branch, and this would be published as a stray page.
+
+  Regenerate from the repository root:
+    python3 -m http.server 8899 &
+    npx playwright screenshot --viewport-size=1200,630 \
+      http://127.0.0.1:8899/hack/social-preview.src.html pages/social-preview.png
+
+  Nothing here is fetched over the network, so it also renders straight from
+  file:// in a browser if you would rather screenshot it by hand.
+
+  The layout deliberately repeats the landing page hero — same ground, glow,
+  eyebrow, accent-coloured phrase, pills and figure — so a shared link and the
+  page it opens look like the same thing.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      :root {
+        --green: #6fd3a3;
+        --green-deep: #16794a;
+        --accent-high: #8ee0b8;
+        --white: #e8f2ed;
+        --gray-2: #9db3aa;
+        --gray-3: #6b8579;
+        --gray-4: #3d5349;
+        --black: #0b1411;
+        --edge: #2f6b52;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      html,
+      body {
+        width: 1200px;
+        height: 630px;
+      }
+      body {
+        position: relative;
+        background: var(--black);
+        color: var(--gray-2);
+        font-family:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 48px;
+        padding: 74px 78px;
+        overflow: hidden;
+      }
+      body::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background:
+          radial-gradient(1100px 560px at 80% 0%, rgba(22, 121, 74, 0.26), transparent 64%),
+          radial-gradient(760px 460px at 2% 100%, rgba(22, 121, 74, 0.14), transparent 60%);
+      }
+      .copy,
+      svg {
+        position: relative;
+        z-index: 1;
+      }
+      .eyebrow {
+        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        font-size: 27px;
+        color: var(--accent-high);
+        margin-bottom: 26px;
+      }
+      h1 {
+        font-size: 62px;
+        line-height: 1.08;
+        letter-spacing: -0.028em;
+        font-weight: 700;
+        color: var(--white);
+        max-width: 14ch;
+      }
+      h1 em {
+        font-style: normal;
+        color: var(--accent-high);
+      }
+      p.sub {
+        margin-top: 26px;
+        font-size: 25px;
+        line-height: 1.45;
+        color: var(--gray-2);
+        max-width: 30ch;
+      }
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 11px;
+        margin-top: 34px;
+      }
+      /* Sized so all four pills sit on one row at this width. */
+      .tags span {
+        font-size: 17px;
+        color: var(--gray-2);
+        border: 1px solid color-mix(in srgb, var(--green) 34%, transparent);
+        background: color-mix(in srgb, var(--green-deep) 12%, transparent);
+        border-radius: 999px;
+        padding: 7px 15px;
+        white-space: nowrap;
+      }
+      svg text {
+        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        font-size: 17px;
+        fill: var(--gray-3);
+      }
+      svg .note {
+        fill: var(--gray-4);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="copy">
+      <div class="eyebrow">cert-manager-webhook-porkbun</div>
+      <h1>Wildcard certificates for domains at <em>Porkbun</em>.</h1>
+      <p class="sub">
+        The cert-manager DNS-01 solver Porkbun never had — with a hardened Helm chart.
+      </p>
+      <div class="tags">
+        <span>Helm chart</span>
+        <span>DNS-01 solver</span>
+        <span>cosign-signed</span>
+        <span>Apache-2.0</span>
+      </div>
+    </div>
+
+    <svg width="392" height="404" viewBox="0 0 392 404" fill="none">
+      <g stroke="var(--edge)" stroke-width="3" stroke-linecap="round">
+        <path d="M40 80 L40 138" />
+        <path d="M40 186 L40 244" />
+        <path d="M40 292 L40 350" />
+      </g>
+      <circle cx="40" cy="52" r="27" fill="var(--black)" stroke="var(--green)" stroke-width="3.5" />
+      <circle cx="40" cy="162" r="23" fill="var(--green)" />
+      <circle cx="40" cy="268" r="23" fill="var(--green)" />
+      <circle cx="40" cy="378" r="23" fill="var(--black)" stroke="var(--green)" stroke-width="3.5" />
+      <text x="90" y="58">cert-manager</text>
+      <text x="90" y="168">this webhook</text>
+      <text x="90" y="274">Porkbun API</text>
+      <text x="90" y="374">_acme-challenge TXT</text>
+      <text x="90" y="396" class="note">Let's Encrypt reads it</text>
+    </svg>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: cert-manager-webhook-porkbun
-description: cert-manager ACME DNS01 solver webhook for domains hosted at Porkbun
+description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun, for Let's Encrypt wildcard certificates
 type: application
 
 # Chart version. Bumped independently of appVersion.
@@ -13,14 +13,60 @@ home: https://github.com/octabits-io/cert-manager-webhook-porkbun
 sources:
   - https://github.com/octabits-io/cert-manager-webhook-porkbun
 
+# Served from gh-pages rather than raw.githubusercontent.com, which returns SVG
+# as text/plain and so renders as nothing. Published by the same release that
+# publishes this chart, so the two never disagree.
+icon: https://octabits-io.github.io/cert-manager-webhook-porkbun/favicon.svg
+
+maintainers:
+  - name: Daniel Hartmann
+    email: contact@dk2.de
+    url: https://github.com/octabits-io
+
+# Terms people actually search for, not just the ones that describe the code.
+# Artifact Hub weights these, and `helm search hub` queries them directly.
 keywords:
   - cert-manager
+  - cert-manager-webhook
   - acme
   - dns01
+  - dns-01
   - porkbun
   - letsencrypt
+  - lets-encrypt
+  - wildcard-certificate
+  - tls
+  - certificates
+  - webhook
+  - solver
 
 annotations:
+  artifacthub.io/category: security
   artifacthub.io/license: Apache-2.0
   artifacthub.io/prerelease: "false"
   artifacthub.io/containsSecurityUpdates: "true"
+  artifacthub.io/operator: "false"
+  # Searches for the bare provider name should find this chart.
+  artifacthub.io/alternativeName: porkbun-webhook
+  artifacthub.io/images: |
+    - name: cert-manager-webhook-porkbun
+      image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.1
+      platforms:
+        - linux/amd64
+        - linux/arm64
+  artifacthub.io/links: |
+    - name: source
+      url: https://github.com/octabits-io/cert-manager-webhook-porkbun
+    - name: support
+      url: https://github.com/octabits-io/cert-manager-webhook-porkbun/issues
+    - name: changelog
+      url: https://github.com/octabits-io/cert-manager-webhook-porkbun/blob/main/CHANGELOG.md
+    - name: container image
+      url: https://github.com/octabits-io/cert-manager-webhook-porkbun/pkgs/container/cert-manager-webhook-porkbun
+  # Rendered as the release notes on Artifact Hub, for the chart version above
+  # and no other. Update it with every version bump, alongside CHANGELOG.md, or
+  # it silently describes the wrong release — and keep unreleased work out of it
+  # until the bump lands.
+  artifacthub.io/changes: |
+    - kind: security
+      description: Rebuild the image with dependency updates clearing CVE-2026-56852 (x/text) and GO-2026-5158 (otel), both reachable in 2.0.0

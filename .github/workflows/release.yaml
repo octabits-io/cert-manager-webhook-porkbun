@@ -102,6 +102,11 @@ jobs:
           git fetch origin gh-pages
           git worktree add /tmp/pages origin/gh-pages
           cp /tmp/pages-drop/*.tgz /tmp/pages/
+          # Landing page, Artifact Hub repository metadata and .nojekyll. These
+          # have to sit next to index.yaml: Artifact Hub only looks for
+          # artifacthub-repo.yml at the repository URL's own path. `cp -a src/.`
+          # rather than `src/*` so the dotfile comes along.
+          cp -a "${GITHUB_WORKSPACE}/pages/." /tmp/pages/
           helm repo index /tmp/pages --url https://octabits-io.github.io/cert-manager-webhook-porkbun
           cd /tmp/pages
           git add -A
