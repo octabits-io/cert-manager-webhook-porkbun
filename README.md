@@ -196,7 +196,7 @@ override it, and `logLevel: 2` to see what it decided.
   `distroless/static`. No shell, no package manager, no `NET_BIND_SERVICE`.
 - `readOnlyRootFilesystem`, all capabilities dropped, `RuntimeDefault` seccomp
   by default — compatible with the `restricted` Pod Security Standard.
-- **Current dependencies**: Go 1.26, cert-manager 1.21, Kubernetes 1.36
+- **Current dependencies**: Go 1.27, cert-manager 1.21, Kubernetes 1.36
   libraries. Upstream shipped Go 1.19 module requirements, cert-manager 1.11.3
   and `golang.org/x/net` v0.7.0.
 - Images are signed with cosign and carry SBOM and provenance attestations.
