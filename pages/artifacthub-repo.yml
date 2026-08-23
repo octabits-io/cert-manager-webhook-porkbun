@@ -19,3 +19,19 @@ repositoryID: 5725560d-e381-4c96-85e6-1e4675bb7985
 owners:
   - name: Daniel Hartmann
     email: contact@dk2.de
+
+# 2.0.2 and 2.0.3 shipped an `artifacthub.io/alternativeName` of
+# `porkbun-webhook`, which Artifact Hub rejects: an alternative name has to be
+# a substring or superstring of the package name, and this one is neither.
+# Both versions therefore failed to register, and the listing sat on 2.0.1.
+#
+# The annotation is gone from the chart, but it is baked into those two
+# published tarballs, so Artifact Hub would fail on them on every processing
+# run forever. Republishing the tarballs to fix it would change digests that
+# are already public, which is worse than the gap. Skipping them keeps the
+# tracking error log meaningful, at the cost of those two versions not
+# appearing in the Artifact Hub version history; both remain installable from
+# the Helm repository and from GitHub releases.
+ignore:
+  - name: cert-manager-webhook-porkbun
+    version: ^2\.0\.[23]$

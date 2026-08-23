@@ -46,8 +46,6 @@ annotations:
   artifacthub.io/prerelease: "false"
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/operator: "false"
-  # Searches for the bare provider name should find this chart.
-  artifacthub.io/alternativeName: porkbun-webhook
   artifacthub.io/images: |
     - name: cert-manager-webhook-porkbun
       image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.3
