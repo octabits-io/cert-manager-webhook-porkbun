@@ -4,10 +4,10 @@ description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkb
 type: application
 
 # Chart version. Bumped independently of appVersion.
-version: 2.0.2
+version: 2.0.3
 
 # Version of the webhook image this chart deploys by default.
-appVersion: "2.0.2"
+appVersion: "2.0.3"
 
 home: https://github.com/octabits-io/cert-manager-webhook-porkbun
 sources:
@@ -50,7 +50,7 @@ annotations:
   artifacthub.io/alternativeName: porkbun-webhook
   artifacthub.io/images: |
     - name: cert-manager-webhook-porkbun
-      image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.2
+      image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.3
       platforms:
         - linux/amd64
         - linux/arm64
@@ -69,12 +69,8 @@ annotations:
   # until the bump lands.
   artifacthub.io/changes: |
     - kind: security
-      description: Refresh golang.org/x/net to v0.58.0 and move the runtime base to distroless/static-debian13
+      description: Build on Go 1.27, clearing six standard-library advisories that were reachable from the webhook
+    - kind: security
+      description: Raise golang.org/x/mod to 0.40.0, clearing CVE-2026-56864 and CVE-2026-56865
     - kind: changed
-      description: Refresh the public suffix list that registered-domain detection depends on, via the x/net bump
-    - kind: added
-      description: Chart keywords, maintainers, icon and Artifact Hub annotations
-    - kind: added
-      description: A landing page at the Helm repository URL, which was previously a 404
-    - kind: fixed
-      description: Publish image attestations, which the release job lacked permission to store
+      description: Refresh the k8s.io libraries to 0.36.4

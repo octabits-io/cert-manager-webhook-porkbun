@@ -1,5 +1,31 @@
 # Changelog
 
+## 2.0.3
+
+Maintenance release. No functional changes to the solver.
+
+### Security
+
+- The image is now built on Go 1.27. This clears the six standard-library
+  advisories `govulncheck` reported as reachable from the webhook —
+  GO-2026-6218 (`net/url`), GO-2026-6091 (`html/template`), GO-2026-6090
+  (`crypto/tls`), GO-2026-6089 (`net/http`), GO-2026-5972 (`encoding/asn1`)
+  and GO-2026-5026 (`net/http` idna). **Deployments running 2.0.2 were not
+  exposed to these**: that image shipped stdlib 1.26.6, which is already the
+  fix line for all six. The advisories were outstanding against the source
+  tree, not the published artifact.
+- `golang.org/x/mod` 0.40.0, clearing CVE-2026-56864 and CVE-2026-56865
+  (a malicious GOSUMDB or GOPROXY able to serve forged module content), with
+  `x/tools` 0.49.0 following. Neither was reachable from the webhook binary —
+  `x/mod` enters only through the conformance-test path, and the vulnerable
+  code is `x/mod/sumdb`, which the `go` command executes rather than this
+  solver.
+
+### Changed
+
+- The `k8s.io` libraries move to 0.36.4, a patch within the same API version.
+  cert-manager stays at 1.21.1.
+
 ## 2.0.2
 
 Maintenance release. No functional changes to the solver.
