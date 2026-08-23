@@ -3,6 +3,7 @@
 [![CI](https://github.com/octabits-io/cert-manager-webhook-porkbun/actions/workflows/ci.yaml/badge.svg)](https://github.com/octabits-io/cert-manager-webhook-porkbun/actions/workflows/ci.yaml)
 [![Release](https://img.shields.io/github/v/release/octabits-io/cert-manager-webhook-porkbun?logo=github&label=release)](https://github.com/octabits-io/cert-manager-webhook-porkbun/releases)
 [![docs](https://img.shields.io/badge/docs-octabits--io.github.io-16794a.svg)](https://octabits-io.github.io/cert-manager-webhook-porkbun/)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/cert-manager-webhook-porkbun)](https://artifacthub.io/packages/helm/cert-manager-webhook-porkbun/cert-manager-webhook-porkbun)
 [![Go Report Card](https://goreportcard.com/badge/github.com/octabits-io/cert-manager-webhook-porkbun)](https://goreportcard.com/report/github.com/octabits-io/cert-manager-webhook-porkbun)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 

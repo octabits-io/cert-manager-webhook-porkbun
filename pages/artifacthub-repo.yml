@@ -4,18 +4,17 @@
 # .github/workflows/release.yaml, so that it is served next to index.yaml —
 # Artifact Hub only looks for it at the repository URL's path.
 #
-# `owners` lets an Artifact Hub account claim ownership of the repository; the
-# email must match the one on that account. Ownership claims are processed
-# immediately.
+# `repositoryID` is what earns the "Verified Publisher" badge: it ties this
+# published file to the repository registered at
+# https://artifacthub.io/control-panel/repositories. It is an identifier, not a
+# secret. Artifact Hub applies it the next time it processes the repository,
+# and for Helm repositories it only reprocesses when index.yaml changes — so
+# the badge appears after the next release, not on push.
 #
-# `repositoryID` is what earns the "Verified Publisher" badge. It is only
-# issued once the repository has been added at
-# https://artifacthub.io/control-panel/repositories — add the repo with URL
-# https://octabits-io.github.io/cert-manager-webhook-porkbun, copy the ID from
-# the repository's row, uncomment the line below and cut a release. It is not a
-# secret.
-#
-# repositoryID: <uuid from the Artifact Hub control panel>
+# `owners` lets an Artifact Hub account claim ownership; the email has to match
+# the one on that account. Ownership claims are processed immediately.
+
+repositoryID: 5725560d-e381-4c96-85e6-1e4675bb7985
 
 owners:
   - name: Daniel Hartmann
