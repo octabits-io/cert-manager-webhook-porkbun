@@ -3,7 +3,7 @@
 # Build stage. TARGETOS/TARGETARCH are supplied by buildx for each platform in
 # the manifest list, so the toolchain cross-compiles instead of running under
 # QEMU emulation.
-FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS build
+FROM --platform=$BUILDPLATFORM golang:1.27-alpine AS build
 
 WORKDIR /workspace
 
