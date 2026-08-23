@@ -168,3 +168,38 @@ func TestArtifactHubImagesMatchAppVersion(t *testing.T) {
 		}
 	}
 }
+
+// Artifact Hub renders the README packaged inside the chart, and nothing else:
+// the repository README at the root of this repo never reaches the listing.
+// Through 2.0.4 there was no chart README, so the Artifact Hub page carried the
+// metadata block and no documentation. `helm lint` does not warn about this,
+// and `helm package` happily builds a chart without one.
+func TestChartReadmeIsPackaged(t *testing.T) {
+	const readmePath = "charts/cert-manager-webhook-porkbun/README.md"
+
+	b, err := os.ReadFile(readmePath)
+	if err != nil {
+		t.Fatalf("reading %s: %v; Artifact Hub renders this file as the package "+
+			"documentation and shows nothing without it", readmePath, err)
+	}
+	if len(b) < 500 {
+		t.Errorf("%s is %d bytes; that is not documentation", readmePath, len(b))
+	}
+
+	// A .helmignore entry would leave the file in git and out of the tarball,
+	// which looks identical here and is invisible on Artifact Hub until the
+	// release lands.
+	ignore, err := os.ReadFile("charts/cert-manager-webhook-porkbun/.helmignore")
+	if err != nil {
+		t.Fatalf("reading .helmignore: %v", err)
+	}
+	for _, line := range strings.Split(string(ignore), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		if strings.Contains(strings.ToUpper(line), "README") {
+			t.Errorf(".helmignore excludes the chart README via %q; it would not be packaged", line)
+		}
+	}
+}

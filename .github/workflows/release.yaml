@@ -125,3 +125,67 @@ jobs:
             -u "${{ github.actor }}" -p "${{ secrets.GITHUB_TOKEN }}"
           helm package charts/cert-manager-webhook-porkbun -d dist/
           helm push dist/*.tgz "oci://ghcr.io/${{ github.repository_owner }}/charts"
+
+  github-release:
+    name: Publish GitHub release
+    runs-on: ubuntu-latest
+    # Last, so a failure here cannot leave the image or the Helm repository
+    # half-published. Historically nothing created these releases at all —
+    # v2.0.0 and v2.0.1 were cut by hand and v2.0.2 through v2.0.4 were simply
+    # missing. If this step ever 403s the way chart-releaser did (see the
+    # comment in the chart job), the artifacts are already live and the release
+    # can be made by hand:
+    #   gh release create vX.Y.Z --title vX.Y.Z --notes-file notes.md dist/*.tgz
+    needs: [image, chart]
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5
+
+      - name: Package the chart
+        run: helm package charts/cert-manager-webhook-porkbun -d dist/
+
+      # The CHANGELOG section for this version, verbatim. It is the release
+      # note that already exists; generating one from commit subjects instead
+      # would be strictly worse and would drift from Artifact Hub's notes.
+      - name: Extract release notes
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          awk -v ver="## ${VERSION#v}" '
+            $0 == ver { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then
+            echo "CHANGELOG.md has no '## ${VERSION#v}' section" >&2
+            exit 1
+          fi
+          {
+            echo
+            echo "---"
+            echo
+            echo "- Image: \`ghcr.io/${{ github.repository }}:${VERSION#v}\` (linux/amd64+arm64, cosign-signed, SBOM + provenance)"
+            echo "  digest \`${{ needs.image.outputs.digest }}\`"
+            echo "- Helm repo: \`https://octabits-io.github.io/cert-manager-webhook-porkbun\`"
+            echo "- OCI chart: \`oci://ghcr.io/${{ github.repository_owner }}/charts/cert-manager-webhook-porkbun\`"
+          } >> notes.md
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          # Idempotent, so a re-run of a partially failed release converges
+          # rather than erroring on an existing release.
+          if gh release view "$VERSION" >/dev/null 2>&1; then
+            gh release edit "$VERSION" --notes-file notes.md --title "$VERSION"
+            gh release upload "$VERSION" dist/*.tgz --clobber
+          else
+            gh release create "$VERSION" --verify-tag \
+              --title "$VERSION" --notes-file notes.md dist/*.tgz
+          fi

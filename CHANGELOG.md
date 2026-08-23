@@ -1,5 +1,28 @@
 # Changelog
 
+## 2.0.5
+
+Metadata release. The webhook binary and the rendered manifests are unchanged
+from 2.0.3.
+
+### Added
+
+- A chart README. Artifact Hub renders the README packaged inside the chart,
+  and there was none, so the listing showed only the metadata block and no
+  documentation at all. It covers installation from both the Helm repository
+  and the OCI registry, the credential Secret and the per-domain API access
+  setting, an Issuer and Certificate example, the solver config keys, every
+  chart value, and the zone-versus-registered-domain behaviour. A unit test
+  now asserts the file exists and is packaged.
+
+### Fixed
+
+- GitHub releases had stopped at 2.0.1: the release workflow never created
+  them, and the ones for 2.0.0 and 2.0.1 had been cut by hand. `release.yaml`
+  now creates the release for the pushed tag, with the packaged chart
+  attached. The missing 2.0.2, 2.0.3 and 2.0.4 releases have been backfilled
+  with the exact tarballs already published to the Helm repository.
+
 ## 2.0.4
 
 Metadata release. The webhook binary and the rendered manifests are unchanged

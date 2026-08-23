@@ -4,10 +4,10 @@ description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkb
 type: application
 
 # Chart version. Bumped independently of appVersion.
-version: 2.0.4
+version: 2.0.5
 
 # Version of the webhook image this chart deploys by default.
-appVersion: "2.0.4"
+appVersion: "2.0.5"
 
 home: https://github.com/octabits-io/cert-manager-webhook-porkbun
 sources:
@@ -48,7 +48,7 @@ annotations:
   artifacthub.io/operator: "false"
   artifacthub.io/images: |
     - name: cert-manager-webhook-porkbun
-      image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.4
+      image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.5
       platforms:
         - linux/amd64
         - linux/arm64
@@ -66,7 +66,7 @@ annotations:
   # containsSecurityUpdates, or it silently describes the wrong release — and
   # keep unreleased work out of it until the bump lands.
   artifacthub.io/changes: |
+    - kind: added
+      description: A chart README, so the Artifact Hub page documents installation, the Issuer configuration and every chart value
     - kind: fixed
-      description: Remove an invalid artifacthub.io/alternativeName that stopped 2.0.2 and 2.0.3 registering on Artifact Hub
-    - kind: changed
-      description: The Artifact Hub listing now shows the icon, keywords, maintainers and links introduced in 2.0.2
+      description: GitHub releases are published for every tag again; 2.0.2, 2.0.3 and 2.0.4 have been backfilled
