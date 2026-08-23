@@ -4,19 +4,34 @@
 # .github/workflows/release.yaml, so that it is served next to index.yaml —
 # Artifact Hub only looks for it at the repository URL's path.
 #
-# `owners` lets an Artifact Hub account claim ownership of the repository; the
-# email must match the one on that account. Ownership claims are processed
-# immediately.
+# `repositoryID` is what earns the "Verified Publisher" badge: it ties this
+# published file to the repository registered at
+# https://artifacthub.io/control-panel/repositories. It is an identifier, not a
+# secret. Artifact Hub applies it the next time it processes the repository,
+# and for Helm repositories it only reprocesses when index.yaml changes — so
+# the badge appears after the next release, not on push.
 #
-# `repositoryID` is what earns the "Verified Publisher" badge. It is only
-# issued once the repository has been added at
-# https://artifacthub.io/control-panel/repositories — add the repo with URL
-# https://octabits-io.github.io/cert-manager-webhook-porkbun, copy the ID from
-# the repository's row, uncomment the line below and cut a release. It is not a
-# secret.
-#
-# repositoryID: <uuid from the Artifact Hub control panel>
+# `owners` lets an Artifact Hub account claim ownership; the email has to match
+# the one on that account. Ownership claims are processed immediately.
+
+repositoryID: 5725560d-e381-4c96-85e6-1e4675bb7985
 
 owners:
   - name: Daniel Hartmann
     email: contact@dk2.de
+
+# 2.0.2 and 2.0.3 shipped an `artifacthub.io/alternativeName` of
+# `porkbun-webhook`, which Artifact Hub rejects: an alternative name has to be
+# a substring or superstring of the package name, and this one is neither.
+# Both versions therefore failed to register, and the listing sat on 2.0.1.
+#
+# The annotation is gone from the chart, but it is baked into those two
+# published tarballs, so Artifact Hub would fail on them on every processing
+# run forever. Republishing the tarballs to fix it would change digests that
+# are already public, which is worse than the gap. Skipping them keeps the
+# tracking error log meaningful, at the cost of those two versions not
+# appearing in the Artifact Hub version history; both remain installable from
+# the Helm repository and from GitHub releases.
+ignore:
+  - name: cert-manager-webhook-porkbun
+    version: ^2\.0\.[23]$

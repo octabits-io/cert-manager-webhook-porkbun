@@ -2,6 +2,65 @@ apiVersion: v1
 entries:
   cert-manager-webhook-porkbun:
   - annotations:
+      artifacthub.io/category: security
+      artifacthub.io/changes: |
+        - kind: fixed
+          description: Remove an invalid artifacthub.io/alternativeName that stopped 2.0.2 and 2.0.3 registering on Artifact Hub
+        - kind: changed
+          description: The Artifact Hub listing now shows the icon, keywords, maintainers and links introduced in 2.0.2
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/images: |
+        - name: cert-manager-webhook-porkbun
+          image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.4
+          platforms:
+            - linux/amd64
+            - linux/arm64
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun
+        - name: support
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun/issues
+        - name: changelog
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun/blob/main/CHANGELOG.md
+        - name: container image
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun/pkgs/container/cert-manager-webhook-porkbun
+      artifacthub.io/operator: "false"
+      artifacthub.io/prerelease: "false"
+    apiVersion: v2
+    appVersion: 2.0.4
+    created: "2026-08-23T15:30:52.002950127Z"
+    description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun,
+      for Let's Encrypt wildcard certificates
+    digest: ffdf2bc7f53ef52c421fa97013d2f085c27f09cf8cab39f232f1268f8b628db5
+    home: https://github.com/octabits-io/cert-manager-webhook-porkbun
+    icon: https://octabits-io.github.io/cert-manager-webhook-porkbun/favicon.svg
+    keywords:
+    - cert-manager
+    - cert-manager-webhook
+    - acme
+    - dns01
+    - dns-01
+    - porkbun
+    - letsencrypt
+    - lets-encrypt
+    - wildcard-certificate
+    - tls
+    - certificates
+    - webhook
+    - solver
+    maintainers:
+    - email: contact@dk2.de
+      name: Daniel Hartmann
+      url: https://github.com/octabits-io
+    name: cert-manager-webhook-porkbun
+    sources:
+    - https://github.com/octabits-io/cert-manager-webhook-porkbun
+    type: application
+    urls:
+    - https://octabits-io.github.io/cert-manager-webhook-porkbun/cert-manager-webhook-porkbun-2.0.4.tgz
+    version: 2.0.4
+  - annotations:
       artifacthub.io/alternativeName: porkbun-webhook
       artifacthub.io/category: security
       artifacthub.io/changes: |
@@ -32,7 +91,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 2.0.3
-    created: "2026-08-23T14:45:31.033721692Z"
+    created: "2026-08-23T15:30:52.002407596Z"
     description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun,
       for Let's Encrypt wildcard certificates
     digest: f183bd3c8f6031a37e8ff09430a7b5295a43bd6918382c785a1f282de7118b43
@@ -98,7 +157,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 2.0.2
-    created: "2026-08-23T14:45:31.03307355Z"
+    created: "2026-08-23T15:30:52.001842137Z"
     description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun,
       for Let's Encrypt wildcard certificates
     digest: 5e4f474d84ac15e6e38bd336f2eb1c039fed3353ecc80c009e4b3052616a5731
@@ -135,7 +194,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 2.0.1
-    created: "2026-08-23T14:45:31.032343214Z"
+    created: "2026-08-23T15:30:52.001287517Z"
     description: cert-manager ACME DNS01 solver webhook for domains hosted at Porkbun
     digest: ac498d4fc5611ef113b1b2efb8eb5aa3ef9892af860b0879f1f3368169144b34
     home: https://github.com/octabits-io/cert-manager-webhook-porkbun
@@ -158,7 +217,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 2.0.0
-    created: "2026-08-23T14:45:31.031699761Z"
+    created: "2026-08-23T15:30:52.00077908Z"
     description: cert-manager ACME DNS01 solver webhook for domains hosted at Porkbun
     digest: 288f167ffbad7517afa483cb5b0693884d67e72816ae4aa7cabf1dfbaa5c81bb
     home: https://github.com/octabits-io/cert-manager-webhook-porkbun
@@ -175,4 +234,4 @@ entries:
     urls:
     - https://octabits-io.github.io/cert-manager-webhook-porkbun/cert-manager-webhook-porkbun-2.0.0.tgz
     version: 2.0.0
-generated: "2026-08-23T14:45:31.030975517Z"
+generated: "2026-08-23T15:30:52.000121782Z"
