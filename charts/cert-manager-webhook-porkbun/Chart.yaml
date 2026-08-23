@@ -4,10 +4,10 @@ description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkb
 type: application
 
 # Chart version. Bumped independently of appVersion.
-version: 2.0.3
+version: 2.0.4
 
 # Version of the webhook image this chart deploys by default.
-appVersion: "2.0.3"
+appVersion: "2.0.4"
 
 home: https://github.com/octabits-io/cert-manager-webhook-porkbun
 sources:
@@ -44,11 +44,11 @@ annotations:
   artifacthub.io/category: security
   artifacthub.io/license: Apache-2.0
   artifacthub.io/prerelease: "false"
-  artifacthub.io/containsSecurityUpdates: "true"
+  artifacthub.io/containsSecurityUpdates: "false"
   artifacthub.io/operator: "false"
   artifacthub.io/images: |
     - name: cert-manager-webhook-porkbun
-      image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.3
+      image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.4
       platforms:
         - linux/amd64
         - linux/arm64
@@ -62,13 +62,11 @@ annotations:
     - name: container image
       url: https://github.com/octabits-io/cert-manager-webhook-porkbun/pkgs/container/cert-manager-webhook-porkbun
   # Rendered as the release notes on Artifact Hub, for the chart version above
-  # and no other. Update it with every version bump, alongside CHANGELOG.md, or
-  # it silently describes the wrong release — and keep unreleased work out of it
-  # until the bump lands.
+  # and no other. Update it with every version bump, alongside CHANGELOG.md and
+  # containsSecurityUpdates, or it silently describes the wrong release — and
+  # keep unreleased work out of it until the bump lands.
   artifacthub.io/changes: |
-    - kind: security
-      description: Build on Go 1.27, clearing six standard-library advisories that were reachable from the webhook
-    - kind: security
-      description: Raise golang.org/x/mod to 0.40.0, clearing CVE-2026-56864 and CVE-2026-56865
+    - kind: fixed
+      description: Remove an invalid artifacthub.io/alternativeName that stopped 2.0.2 and 2.0.3 registering on Artifact Hub
     - kind: changed
-      description: Refresh the k8s.io libraries to 0.36.4
+      description: The Artifact Hub listing now shows the icon, keywords, maintainers and links introduced in 2.0.2

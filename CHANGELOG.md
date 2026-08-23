@@ -1,5 +1,34 @@
 # Changelog
 
+## 2.0.4
+
+Metadata release. The webhook binary and the rendered manifests are unchanged
+from 2.0.3.
+
+### Fixed
+
+- `artifacthub.io/alternativeName` was set to `porkbun-webhook`, which Artifact
+  Hub rejects because an alternative name has to be a substring or superstring
+  of the package name. Registration failed for 2.0.2 and 2.0.3, so the Artifact
+  Hub listing stayed on 2.0.1 and showed none of the metadata those releases
+  carried. The annotation is removed; `porkbun` is already a keyword and the
+  last label of the package name, so nothing is lost.
+- Those two tarballs still embed the annotation and would fail on every
+  Artifact Hub processing run, so they are skipped via `artifacthub-repo.yml`.
+  Republishing them would change digests that are already public. Both remain
+  installable from the Helm repository and from GitHub releases; only the
+  Artifact Hub version history skips them.
+
+### Added
+
+- The Artifact Hub annotations are validated by a unit test. `helm lint` does
+  not know these annotations and the only signal of a bad one is a line in a
+  tracking log on artifacthub.io, which is how the above shipped twice. The
+  test also checks that the image tag in `artifacthub.io/images` matches
+  `appVersion`.
+- `repositoryID` in `artifacthub-repo.yml`, which earns the Verified Publisher
+  badge, and an Artifact Hub badge in the README.
+
 ## 2.0.3
 
 Maintenance release. No functional changes to the solver.
