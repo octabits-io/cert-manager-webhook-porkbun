@@ -2,17 +2,16 @@
 <!--
   Hand-written; there is no build step here to generate one.
 
-  Note the asymmetry with robots.txt: a sitemap is valid at any path and can be
-  submitted directly in Google Search Console, so this one works where it sits.
-  A robots.txt would not — crawlers only read it at the origin root, which is
-  https://octabits-io.github.io/robots.txt and belongs to an
-  `octabits-io.github.io` repository, not to this one. Adding a robots.txt here
-  would be a file nothing ever reads, so there isn't one.
+  This used to sit alongside a note that a robots.txt would be pointless: under
+  https://octabits-io.github.io/cert-manager-webhook-porkbun/ a robots.txt would
+  never be read, since crawlers only look at the origin root — which belonged to
+  an `octabits-io.github.io` repository, not to this one. The custom domain moved
+  the site to its own origin, so robots.txt now sits next to this file and works.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://octabits-io.github.io/cert-manager-webhook-porkbun/</loc>
-    <lastmod>2026-08-16</lastmod>
+    <loc>https://porkbun.octabits.io/</loc>
+    <lastmod>2026-08-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>

@@ -23,7 +23,7 @@ the [repository README](https://github.com/octabits-io/cert-manager-webhook-pork
 ## Install
 
 ```bash
-helm repo add octabits https://octabits-io.github.io/cert-manager-webhook-porkbun
+helm repo add octabits https://porkbun.octabits.io
 helm repo update
 
 helm install cert-manager-webhook-porkbun octabits/cert-manager-webhook-porkbun \

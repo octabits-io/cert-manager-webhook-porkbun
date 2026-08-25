@@ -16,7 +16,7 @@ sources:
 # Served from gh-pages rather than raw.githubusercontent.com, which returns SVG
 # as text/plain and so renders as nothing. Published by the same release that
 # publishes this chart, so the two never disagree.
-icon: https://octabits-io.github.io/cert-manager-webhook-porkbun/favicon.svg
+icon: https://porkbun.octabits.io/favicon.svg
 
 maintainers:
   - name: Daniel Hartmann

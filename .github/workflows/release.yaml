@@ -103,13 +103,14 @@ jobs:
           git worktree add /tmp/pages origin/gh-pages
           cp /tmp/pages-drop/*.tgz /tmp/pages/
           # Landing page, Artifact Hub repository metadata, the Google Search
-          # Console verification file and .nojekyll. These have to sit next to
-          # index.yaml: Artifact Hub only looks for artifacthub-repo.yml at the
-          # repository URL's own path, and Search Console only looks for
-          # google*.html at the verified property's own path. `cp -a src/.`
-          # rather than `src/*` so the dotfile comes along.
+          # Console verification file, robots.txt, CNAME and .nojekyll. These have
+          # to sit next to index.yaml: Artifact Hub only looks for
+          # artifacthub-repo.yml at the repository URL's own path, Search Console
+          # only looks for google*.html at the verified property's own path, and
+          # CNAME is what keeps Pages on the custom domain. `cp -a src/.` rather
+          # than `src/*` so the dotfiles come along.
           cp -a "${GITHUB_WORKSPACE}/pages/." /tmp/pages/
-          helm repo index /tmp/pages --url https://octabits-io.github.io/cert-manager-webhook-porkbun
+          helm repo index /tmp/pages --url https://porkbun.octabits.io
           cd /tmp/pages
           git add -A
           # Idempotent re-runs: an already-published version changes nothing.
@@ -172,7 +173,7 @@ jobs:
             echo
             echo "- Image: \`ghcr.io/${{ github.repository }}:${VERSION#v}\` (linux/amd64+arm64, cosign-signed, SBOM + provenance)"
             echo "  digest \`${{ needs.image.outputs.digest }}\`"
-            echo "- Helm repo: \`https://octabits-io.github.io/cert-manager-webhook-porkbun\`"
+            echo "- Helm repo: \`https://porkbun.octabits.io\`"
             echo "- OCI chart: \`oci://ghcr.io/${{ github.repository_owner }}/charts/cert-manager-webhook-porkbun\`"
           } >> notes.md
 
