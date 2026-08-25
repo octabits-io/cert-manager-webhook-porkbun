@@ -7,6 +7,8 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/octabits-io/cert-manager-webhook-porkbun)](https://goreportcard.com/report/github.com/octabits-io/cert-manager-webhook-porkbun)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 
+**📖 Documentation and Helm repository: <https://porkbun.octabits.io>**
+
 A [cert-manager](https://cert-manager.io/) ACME **DNS-01** solver webhook for
 domains hosted at [Porkbun](https://porkbun.com/), which cert-manager has no
 built-in solver for. Install the Helm chart, point an Issuer at it, and Let's
