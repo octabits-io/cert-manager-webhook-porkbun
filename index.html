@@ -2,7 +2,7 @@
 <!--
   Landing page for the Helm repository served from gh-pages.
 
-  Without it, https://octabits-io.github.io/cert-manager-webhook-porkbun/ is a
+  Without it, https://porkbun.octabits.io/ is a
   404: `helm repo add` fetches index.yaml directly and never needs an index.html,
   so the one URL people paste into a browser shows nothing. This is also the only
   page of the project a search engine can index that is not a GitHub repo page.
@@ -29,14 +29,14 @@
       name="description"
       content="A cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun. Wildcard certificates from Let's Encrypt, a hardened Helm chart, and no cluster-wide Secret access."
     />
-    <link rel="canonical" href="https://octabits-io.github.io/cert-manager-webhook-porkbun/" />
+    <link rel="canonical" href="https://porkbun.octabits.io/" />
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#0b1411" />
 
     <meta property="og:site_name" content="octabits" />
     <meta property="og:locale" content="en" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://octabits-io.github.io/cert-manager-webhook-porkbun/" />
+    <meta property="og:url" content="https://porkbun.octabits.io/" />
     <meta property="og:title" content="cert-manager-webhook-porkbun" />
     <meta
       property="og:description"
@@ -45,7 +45,7 @@
     <!-- The same card the repository uses as its social preview. -->
     <meta
       property="og:image"
-      content="https://octabits-io.github.io/cert-manager-webhook-porkbun/social-preview.png"
+      content="https://porkbun.octabits.io/social-preview.png"
     />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -61,7 +61,7 @@
     />
     <meta
       name="twitter:image"
-      content="https://octabits-io.github.io/cert-manager-webhook-porkbun/social-preview.png"
+      content="https://porkbun.octabits.io/social-preview.png"
     />
 
     <script type="application/ld+json">
@@ -75,7 +75,7 @@
             "codeRepository": "https://github.com/octabits-io/cert-manager-webhook-porkbun",
             "programmingLanguage": "Go",
             "license": "https://www.apache.org/licenses/LICENSE-2.0",
-            "url": "https://octabits-io.github.io/cert-manager-webhook-porkbun/",
+            "url": "https://porkbun.octabits.io/",
             "author": { "@type": "Organization", "name": "octabits" }
           },
           {
@@ -84,8 +84,8 @@
             "applicationCategory": "DeveloperApplication",
             "operatingSystem": "Kubernetes",
             "softwareVersion": "2.0.5",
-            "url": "https://octabits-io.github.io/cert-manager-webhook-porkbun/",
-            "downloadUrl": "https://octabits-io.github.io/cert-manager-webhook-porkbun/index.yaml",
+            "url": "https://porkbun.octabits.io/",
+            "downloadUrl": "https://porkbun.octabits.io/index.yaml",
             "license": "https://www.apache.org/licenses/LICENSE-2.0",
             "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
           }
@@ -520,7 +520,7 @@
     <section id="install">
       <div class="container">
         <h2>Install</h2>
-        <pre><code>helm repo add octabits https://octabits-io.github.io/cert-manager-webhook-porkbun
+        <pre><code>helm repo add octabits https://porkbun.octabits.io
 helm repo update
 
 helm install cert-manager-webhook-porkbun octabits/cert-manager-webhook-porkbun \

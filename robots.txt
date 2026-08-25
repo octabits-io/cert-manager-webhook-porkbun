@@ -1,0 +1,7 @@
+# Readable only because the site has its own origin (see CNAME) — under the old
+# github.io project path, crawlers would have looked for this at the domain root
+# and never found it.
+User-agent: *
+Allow: /
+
+Sitemap: https://porkbun.octabits.io/sitemap.xml

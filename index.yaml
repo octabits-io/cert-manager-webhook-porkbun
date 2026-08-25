@@ -34,7 +34,7 @@ entries:
       for Let's Encrypt wildcard certificates
     digest: 2ae889a3669074ddf21129b9eb61f0964db644d99a98eb4cb4045b67e10ad269
     home: https://github.com/octabits-io/cert-manager-webhook-porkbun
-    icon: https://octabits-io.github.io/cert-manager-webhook-porkbun/favicon.svg
+    icon: https://porkbun.octabits.io/favicon.svg
     keywords:
     - cert-manager
     - cert-manager-webhook
@@ -58,7 +58,7 @@ entries:
     - https://github.com/octabits-io/cert-manager-webhook-porkbun
     type: application
     urls:
-    - https://octabits-io.github.io/cert-manager-webhook-porkbun/cert-manager-webhook-porkbun-2.0.5.tgz
+    - https://porkbun.octabits.io/cert-manager-webhook-porkbun-2.0.5.tgz
     version: 2.0.5
   - annotations:
       artifacthub.io/category: security
@@ -93,7 +93,7 @@ entries:
       for Let's Encrypt wildcard certificates
     digest: ffdf2bc7f53ef52c421fa97013d2f085c27f09cf8cab39f232f1268f8b628db5
     home: https://github.com/octabits-io/cert-manager-webhook-porkbun
-    icon: https://octabits-io.github.io/cert-manager-webhook-porkbun/favicon.svg
+    icon: https://porkbun.octabits.io/favicon.svg
     keywords:
     - cert-manager
     - cert-manager-webhook
@@ -117,7 +117,7 @@ entries:
     - https://github.com/octabits-io/cert-manager-webhook-porkbun
     type: application
     urls:
-    - https://octabits-io.github.io/cert-manager-webhook-porkbun/cert-manager-webhook-porkbun-2.0.4.tgz
+    - https://porkbun.octabits.io/cert-manager-webhook-porkbun-2.0.4.tgz
     version: 2.0.4
   - annotations:
       artifacthub.io/alternativeName: porkbun-webhook
@@ -155,7 +155,7 @@ entries:
       for Let's Encrypt wildcard certificates
     digest: f183bd3c8f6031a37e8ff09430a7b5295a43bd6918382c785a1f282de7118b43
     home: https://github.com/octabits-io/cert-manager-webhook-porkbun
-    icon: https://octabits-io.github.io/cert-manager-webhook-porkbun/favicon.svg
+    icon: https://porkbun.octabits.io/favicon.svg
     keywords:
     - cert-manager
     - cert-manager-webhook
@@ -179,7 +179,7 @@ entries:
     - https://github.com/octabits-io/cert-manager-webhook-porkbun
     type: application
     urls:
-    - https://octabits-io.github.io/cert-manager-webhook-porkbun/cert-manager-webhook-porkbun-2.0.3.tgz
+    - https://porkbun.octabits.io/cert-manager-webhook-porkbun-2.0.3.tgz
     version: 2.0.3
   - annotations:
       artifacthub.io/alternativeName: porkbun-webhook
@@ -221,7 +221,7 @@ entries:
       for Let's Encrypt wildcard certificates
     digest: 5e4f474d84ac15e6e38bd336f2eb1c039fed3353ecc80c009e4b3052616a5731
     home: https://github.com/octabits-io/cert-manager-webhook-porkbun
-    icon: https://octabits-io.github.io/cert-manager-webhook-porkbun/favicon.svg
+    icon: https://porkbun.octabits.io/favicon.svg
     keywords:
     - cert-manager
     - cert-manager-webhook
@@ -245,7 +245,7 @@ entries:
     - https://github.com/octabits-io/cert-manager-webhook-porkbun
     type: application
     urls:
-    - https://octabits-io.github.io/cert-manager-webhook-porkbun/cert-manager-webhook-porkbun-2.0.2.tgz
+    - https://porkbun.octabits.io/cert-manager-webhook-porkbun-2.0.2.tgz
     version: 2.0.2
   - annotations:
       artifacthub.io/containsSecurityUpdates: "true"
@@ -268,7 +268,7 @@ entries:
     - https://github.com/octabits-io/cert-manager-webhook-porkbun
     type: application
     urls:
-    - https://octabits-io.github.io/cert-manager-webhook-porkbun/cert-manager-webhook-porkbun-2.0.1.tgz
+    - https://porkbun.octabits.io/cert-manager-webhook-porkbun-2.0.1.tgz
     version: 2.0.1
   - annotations:
       artifacthub.io/containsSecurityUpdates: "true"
@@ -291,6 +291,6 @@ entries:
     - https://github.com/octabits-io/cert-manager-webhook-porkbun
     type: application
     urls:
-    - https://octabits-io.github.io/cert-manager-webhook-porkbun/cert-manager-webhook-porkbun-2.0.0.tgz
+    - https://porkbun.octabits.io/cert-manager-webhook-porkbun-2.0.0.tgz
     version: 2.0.0
 generated: "2026-08-23T20:04:52.249548649Z"
