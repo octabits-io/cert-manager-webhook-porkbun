@@ -1,5 +1,33 @@
 # Changelog
 
+## 2.0.6
+
+Security release. No functional changes to the solver; the rendered manifests
+are unchanged from 2.0.5.
+
+### Security
+
+- `google.golang.org/grpc` 1.83.2, clearing CVE-2026-84304
+  (GHSA-vp52-pcj8-j9qc, HIGH). gRPC-Go buffered every fragmented HTTP/2 DATA
+  frame as its own `recvMsg`, so a stream of one-byte frames could exhaust
+  heap while staying inside the connection and stream flow-control windows.
+  **Deployments running 2.0.5 were not exposed**: the vulnerable transport is
+  linked in only through the apiserver's etcd client, and this webhook opens
+  no gRPC connections, so nothing ever reaches that code. It failed the source
+  and image scan gates all the same. `govulncheck` did not report it — the Go
+  vulnerability database carries the advisory under its GHSA identifier with
+  no `GO-` entry yet, which is worth remembering the next time a clean
+  `govulncheck` run is read as an all-clear.
+- `golang.org/x/crypto` 0.56.0, clearing CVE-2026-56855 and CVE-2026-78662,
+  both denial of service in `x/crypto/ssh` channel handling. Neither was
+  reachable: `x/crypto` enters through `cryptobyte`, and `x/crypto/ssh` is not
+  linked into the binary at all.
+
+grpc is a transitive dependency of cert-manager, which at v1.21.1 — the latest
+release — still pins the vulnerable 1.82.1, so the bump is an explicit
+promotion into the indirect block rather than a parent bump. It can be dropped
+once a cert-manager release carries 1.83.1 or later.
+
 ## 2.0.5
 
 Metadata release. The webhook binary and the rendered manifests are unchanged
