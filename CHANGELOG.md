@@ -1,5 +1,62 @@
 # Changelog
 
+## 2.0.7
+
+Security release. No functional changes to the solver; the rendered manifests
+differ from 2.0.6 only in the version labels and the image tag.
+
+### Security
+
+- `go.etcd.io/etcd/client/pkg/v3` 3.6.14, clearing CVE-2026-73500
+  (GHSA-6vch-q96h-7gc3, GO-2026-6107, HIGH). `tlsListener.acceptLoop` spawned a
+  handshake goroutine per accepted connection with no deadline and no bound, so
+  a flood of connections that never complete the handshake could exhaust
+  memory. **Deployments running 2.0.6 were not exposed**: the package enters
+  through the apiserver's etcd client and `govulncheck` placed it in the
+  imported-but-never-called tier. The webhook accepts its own TLS connections
+  through `k8s.io/apiserver`, not through this listener, and opens no etcd
+  connection at all.
+- `github.com/google/cel-go` 0.30.0, clearing GHSA-gcjh-h69q-9w9g
+  (GO-2026-6094, MEDIUM), in which `NativeTypes` and `ParseStructTag` exposed
+  unexported struct fields to CEL expressions. Also not reachable: cel-go is
+  linked in through the apiserver's CEL validation machinery, this solver
+  declares no CEL expressions, and the vulnerable constructors are never
+  called.
+- Both advisories were outstanding against 2.0.6 and **neither tripped the
+  HIGH/CRITICAL source or image gate** — verified by running `trivy fs` against
+  the 2.0.6 tree, which reports a clean `go.mod` even for the HIGH. They
+  surfaced only in `govulncheck`'s imported-packages tier. That is the mirror
+  image of 2.0.6, where Trivy caught the gRPC advisory and `govulncheck` missed
+  it: neither scanner is sufficient alone, which is why `/cve-scan` runs both.
+
+### Changed
+
+- `github.com/cert-manager/cert-manager` 1.21.2, which is what carries the two
+  bumps above as transitive minimums rather than as explicit promotions. Its own
+  fixes — bounding ACME response bodies, keeping ACME server responses out of
+  `Issuer` status, and hardening the admission path against an unset resource —
+  **do not apply to this binary**: only 17 cert-manager packages are linked
+  here, all under `pkg/acme/webhook`, `pkg/apis` and `pkg/logs`, and none of the
+  ACME issuer, controller or admission-webhook code is among them. Those fixes
+  protect a cert-manager deployment, not this solver. cert-manager published no
+  release notes for 1.21.2, so the change set is the
+  [`v1.21.1...v1.21.2` range](https://github.com/cert-manager/cert-manager/compare/v1.21.1...v1.21.2).
+- `golang.org/x/net` 0.59.0, with `x/crypto` 0.57.0, `x/mod` 0.41.0, `x/text`
+  0.42.0, `x/sync` 0.23.0, `x/sys` 0.48.0 and `x/term` 0.46.0 following as its
+  transitive minimums.
+- 2.0.6's explicit promotion of `google.golang.org/grpc` to 1.83.2 is now
+  carried by the parent — cert-manager 1.21.2 requires exactly that version, as
+  it does `x/crypto` 0.56.0 — so the note asking for it to be dropped once a
+  cert-manager release caught up is settled. Nothing in `go.mod` reaches ahead
+  of the module graph any more.
+- The `k8s.io` libraries stay on 0.36.4 and `sigs.k8s.io/controller-runtime` on
+  0.24.1. 0.37.0 is available, and is what controller-runtime 0.25.0 requires,
+  but cert-manager 1.21.2 still pins 0.36.2; moving apimachinery ahead of what
+  cert-manager's webhook server was built against is the mismatch this project
+  avoids. It waits for a cert-manager release that leads.
+- `docker/setup-qemu-action` moves from v4.2.0 to v4.3.0 in the release
+  workflow. Action-internal dependency bumps only.
+
 ## 2.0.6
 
 Security release. No functional changes to the solver; the rendered manifests

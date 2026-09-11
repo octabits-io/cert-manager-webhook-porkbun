@@ -4,10 +4,10 @@ description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkb
 type: application
 
 # Chart version. Bumped independently of appVersion.
-version: 2.0.6
+version: 2.0.7
 
 # Version of the webhook image this chart deploys by default.
-appVersion: "2.0.6"
+appVersion: "2.0.7"
 
 home: https://github.com/octabits-io/cert-manager-webhook-porkbun
 sources:
@@ -48,7 +48,7 @@ annotations:
   artifacthub.io/operator: "false"
   artifacthub.io/images: |
     - name: cert-manager-webhook-porkbun
-      image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.6
+      image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.7
       platforms:
         - linux/amd64
         - linux/arm64
@@ -67,6 +67,8 @@ annotations:
   # keep unreleased work out of it until the bump lands.
   artifacthub.io/changes: |
     - kind: security
-      description: gRPC-Go bumped to 1.83.2, clearing CVE-2026-84304 (HIGH, remote heap exhaustion via fragmented HTTP/2 DATA frames)
+      description: etcd client libraries bumped to 3.6.14, clearing CVE-2026-73500 (HIGH, unbounded TLS handshake goroutines with no deadline)
     - kind: security
-      description: golang.org/x/crypto bumped to 0.56.0, clearing CVE-2026-56855 and CVE-2026-78662 in x/crypto/ssh
+      description: cel-go bumped to 0.30.0, clearing GHSA-gcjh-h69q-9w9g (MEDIUM, JSON private fields exposed via NativeTypes and ParseStructTag)
+    - kind: changed
+      description: cert-manager updated to 1.21.2 and golang.org/x/net to 0.59.0; the k8s.io libraries stay on 0.36.4, the version cert-manager pins
