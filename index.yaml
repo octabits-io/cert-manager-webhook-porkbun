@@ -5,6 +5,67 @@ entries:
       artifacthub.io/category: security
       artifacthub.io/changes: |
         - kind: security
+          description: etcd client libraries bumped to 3.6.14, clearing CVE-2026-73500 (HIGH, unbounded TLS handshake goroutines with no deadline)
+        - kind: security
+          description: cel-go bumped to 0.30.0, clearing GHSA-gcjh-h69q-9w9g (MEDIUM, JSON private fields exposed via NativeTypes and ParseStructTag)
+        - kind: changed
+          description: cert-manager updated to 1.21.2 and golang.org/x/net to 0.59.0; the k8s.io libraries stay on 0.36.4, the version cert-manager pins
+      artifacthub.io/containsSecurityUpdates: "true"
+      artifacthub.io/images: |
+        - name: cert-manager-webhook-porkbun
+          image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.7
+          platforms:
+            - linux/amd64
+            - linux/arm64
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun
+        - name: support
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun/issues
+        - name: changelog
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun/blob/main/CHANGELOG.md
+        - name: container image
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun/pkgs/container/cert-manager-webhook-porkbun
+      artifacthub.io/operator: "false"
+      artifacthub.io/prerelease: "false"
+    apiVersion: v2
+    appVersion: 2.0.7
+    created: "2026-09-11T05:34:58.815721296Z"
+    description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun,
+      for Let's Encrypt wildcard certificates
+    digest: b9c8d27a3a043a14e52716f911da6bdc47143b44e7c9f012c1424bd0bd3f5239
+    home: https://github.com/octabits-io/cert-manager-webhook-porkbun
+    icon: https://porkbun.octabits.io/favicon.svg
+    keywords:
+    - cert-manager
+    - cert-manager-webhook
+    - acme
+    - dns01
+    - dns-01
+    - porkbun
+    - letsencrypt
+    - lets-encrypt
+    - wildcard-certificate
+    - tls
+    - certificates
+    - webhook
+    - solver
+    maintainers:
+    - email: contact@dk2.de
+      name: Daniel Hartmann
+      url: https://github.com/octabits-io
+    name: cert-manager-webhook-porkbun
+    sources:
+    - https://github.com/octabits-io/cert-manager-webhook-porkbun
+    type: application
+    urls:
+    - https://porkbun.octabits.io/cert-manager-webhook-porkbun-2.0.7.tgz
+    version: 2.0.7
+  - annotations:
+      artifacthub.io/category: security
+      artifacthub.io/changes: |
+        - kind: security
           description: gRPC-Go bumped to 1.83.2, clearing CVE-2026-84304 (HIGH, remote heap exhaustion via fragmented HTTP/2 DATA frames)
         - kind: security
           description: golang.org/x/crypto bumped to 0.56.0, clearing CVE-2026-56855 and CVE-2026-78662 in x/crypto/ssh
@@ -29,7 +90,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 2.0.6
-    created: "2026-09-07T12:25:49.585930697Z"
+    created: "2026-09-11T05:34:58.815014502Z"
     description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun,
       for Let's Encrypt wildcard certificates
     digest: 7806b58182a4b9026e0e9892f544ea1da31710e82b86ed3f58170c592c715b26
@@ -88,7 +149,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 2.0.5
-    created: "2026-09-07T12:25:49.585203149Z"
+    created: "2026-09-11T05:34:58.814264127Z"
     description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun,
       for Let's Encrypt wildcard certificates
     digest: 2ae889a3669074ddf21129b9eb61f0964db644d99a98eb4cb4045b67e10ad269
@@ -147,7 +208,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 2.0.4
-    created: "2026-09-07T12:25:49.584429643Z"
+    created: "2026-09-11T05:34:58.812632405Z"
     description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun,
       for Let's Encrypt wildcard certificates
     digest: ffdf2bc7f53ef52c421fa97013d2f085c27f09cf8cab39f232f1268f8b628db5
@@ -209,7 +270,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 2.0.3
-    created: "2026-09-07T12:25:49.583754333Z"
+    created: "2026-09-11T05:34:58.811977277Z"
     description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun,
       for Let's Encrypt wildcard certificates
     digest: f183bd3c8f6031a37e8ff09430a7b5295a43bd6918382c785a1f282de7118b43
@@ -275,7 +336,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 2.0.2
-    created: "2026-09-07T12:25:49.58268627Z"
+    created: "2026-09-11T05:34:58.811283898Z"
     description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun,
       for Let's Encrypt wildcard certificates
     digest: 5e4f474d84ac15e6e38bd336f2eb1c039fed3353ecc80c009e4b3052616a5731
@@ -312,7 +373,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 2.0.1
-    created: "2026-09-07T12:25:49.581641492Z"
+    created: "2026-09-11T05:34:58.810625314Z"
     description: cert-manager ACME DNS01 solver webhook for domains hosted at Porkbun
     digest: ac498d4fc5611ef113b1b2efb8eb5aa3ef9892af860b0879f1f3368169144b34
     home: https://github.com/octabits-io/cert-manager-webhook-porkbun
@@ -335,7 +396,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 2.0.0
-    created: "2026-09-07T12:25:49.581052469Z"
+    created: "2026-09-11T05:34:58.81000993Z"
     description: cert-manager ACME DNS01 solver webhook for domains hosted at Porkbun
     digest: 288f167ffbad7517afa483cb5b0693884d67e72816ae4aa7cabf1dfbaa5c81bb
     home: https://github.com/octabits-io/cert-manager-webhook-porkbun
@@ -352,4 +413,4 @@ entries:
     urls:
     - https://porkbun.octabits.io/cert-manager-webhook-porkbun-2.0.0.tgz
     version: 2.0.0
-generated: "2026-09-07T12:25:49.580238683Z"
+generated: "2026-09-11T05:34:58.809236333Z"
