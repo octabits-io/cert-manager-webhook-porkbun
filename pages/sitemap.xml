@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Hand-written; there is no build step here to generate one.
+  Empty on purpose. The only page this host served, its landing page, moved to
+  https://octabits.io/open-source/porkbun, which that site's own sitemap lists;
+  what is left here (index.yaml, the chart archives) is not for search engines.
 
-  This used to sit alongside a note that a robots.txt would be pointless: under
-  https://octabits-io.github.io/cert-manager-webhook-porkbun/ a robots.txt would
-  never be read, since crawlers only look at the origin root — which belonged to
-  an `octabits-io.github.io` repository, not to this one. The custom domain moved
-  the site to its own origin, so robots.txt now sits next to this file and works.
+  Kept rather than deleted because the release workflow copies pages/ onto
+  gh-pages without removing anything, so a deleted file would stay published
+  with its old content.
 -->
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://porkbun.octabits.io/</loc>
-    <lastmod>2026-08-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
-  </url>
-</urlset>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>

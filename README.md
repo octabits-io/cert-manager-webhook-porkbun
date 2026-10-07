@@ -2,12 +2,12 @@
 
 [![CI](https://github.com/octabits-io/cert-manager-webhook-porkbun/actions/workflows/ci.yaml/badge.svg)](https://github.com/octabits-io/cert-manager-webhook-porkbun/actions/workflows/ci.yaml)
 [![Release](https://img.shields.io/github/v/release/octabits-io/cert-manager-webhook-porkbun?logo=github&label=release)](https://github.com/octabits-io/cert-manager-webhook-porkbun/releases)
-[![docs](https://img.shields.io/badge/docs-porkbun.octabits.io-16794a.svg)](https://porkbun.octabits.io/)
+[![docs](https://img.shields.io/badge/docs-octabits.io-16794a.svg)](https://octabits.io/open-source/porkbun)
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/cert-manager-webhook-porkbun)](https://artifacthub.io/packages/helm/cert-manager-webhook-porkbun/cert-manager-webhook-porkbun)
 [![Go Report Card](https://goreportcard.com/badge/github.com/octabits-io/cert-manager-webhook-porkbun)](https://goreportcard.com/report/github.com/octabits-io/cert-manager-webhook-porkbun)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 
-**📖 Documentation and Helm repository: <https://porkbun.octabits.io>**
+**📖 Documentation: <https://octabits.io/open-source/porkbun> · Helm repository: <https://porkbun.octabits.io>**
 
 A [cert-manager](https://cert-manager.io/) ACME **DNS-01** solver webhook for
 domains hosted at [Porkbun](https://porkbun.com/), which cert-manager has no

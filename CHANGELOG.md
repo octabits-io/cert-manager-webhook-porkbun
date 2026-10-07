@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Documentation
+
+- The project's page moved to <https://octabits.io/open-source/porkbun>, which
+  renders this README at each release tag. `https://porkbun.octabits.io` stays
+  the Helm repository — `index.yaml`, the chart archives and
+  `artifacthub-repo.yml` are published there as before, and `helm repo add`
+  needs no change. Its landing page now redirects to the new page.
+
 ## 2.0.7
 
 Security release. No functional changes to the solver; the rendered manifests
