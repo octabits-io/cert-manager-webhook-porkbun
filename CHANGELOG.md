@@ -1,6 +1,47 @@
 # Changelog
 
-## Unreleased
+## 2.0.8
+
+Security release. No functional changes to the solver; the rendered manifests
+differ from 2.0.7 only in the version labels and the image tag.
+
+### Security
+
+- `golang.org/x/net` 0.61.0, clearing five HTTP/2 advisories that
+  `govulncheck` reports as **reachable** from this binary: the webhook's
+  aggregated apiserver serves HTTP/2, and the chart ships no NetworkPolicy, so
+  anything in the cluster that can reach the pod could hit them. All are
+  denial of service; none exposes credentials.
+  - GO-2026-6617 (CVE-2026-97032): server crash from an HPACK encoder race
+  - GO-2026-6603 (CVE-2026-78659): server memory exhaustion via Trailer headers
+  - GO-2026-6611 (CVE-2026-78669): CPU exhaustion from repeated initial window
+    changes
+  - GO-2026-6612 (CVE-2026-78663): double flow-control refund on server streams
+  - GO-2026-6610 (CVE-2026-78660): transport accepts malformed framing headers
+- Go 1.27.2. The 2.0.7 image was built on Go 1.27.0, before seven standard
+  library advisories were fixed: GO-2026-6613 (CVE-2026-94439) and GO-2026-6605
+  (CVE-2026-56866), HTTP/1 desync around CONNECT; GO-2026-6609
+  (CVE-2026-78667), unbounded Range header parsing; GO-2026-6608
+  (CVE-2026-94440), MIME header memory-limit bypass; GO-2026-6607
+  (CVE-2026-97031), malformed ECH extensions in `crypto/tls`; and GO-2026-6600
+  (CVE-2026-97030) and GO-2026-6599 (CVE-2026-94448) in `html/template`. The
+  build image already floats on `golang:1.27-alpine`, so the rebuild alone
+  picks the fix up; the `go` directive in `go.mod` is raised to 1.27.2 so CI
+  and local scans can no longer run on an older patch release.
+- Still open: GO-2026-6505 (CVE-2026-81870, LOW), `otlptrace` 1.40.0 logging
+  exporter endpoint URLs. It enters through `k8s.io/apiserver` and matters only
+  when apiserver tracing is configured, which the chart never does; it is left
+  for a cert-manager bump to carry rather than promoting the otel module set.
+
+### Changed
+
+- `k8s.io/*` 0.36.5 (patch). It stays on the minor that cert-manager 1.21.2
+  requires; 0.37 waits for a cert-manager release built on it.
+- `x/crypto` 0.58.0, `x/sync` 0.24.0, `x/sys` 0.49.0, `x/term` 0.47.0, `x/text`
+  0.43.0 and `x/tools` 0.51.0 follow as `x/net`'s transitive minimums.
+- GitHub Actions: `docker/setup-buildx-action` 4.4.1,
+  `docker/build-push-action` 7.4.0 and `docker/setup-qemu-action` 4.4.0, with
+  pin comments now carrying the exact version.
 
 ### Documentation
 
