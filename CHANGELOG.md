@@ -1,5 +1,36 @@
 # Changelog
 
+## 2.0.9
+
+Security release. No functional changes to the solver; the rendered manifests
+differ from 2.0.8 only in the version labels and the image tag.
+
+### Security
+
+- Go 1.27.3. Its `crypto/x509` rejects certificate chains that pass through the
+  compromised eMudhra intermediates (GO-2026-6809, CVE-2026-111943). The
+  webhook verifies the Porkbun API's TLS chain with `crypto/x509`, and the 2.0.8
+  image was built on Go 1.27.2, before the fix. The build image already floats
+  on `golang:1.27-alpine`, so the rebuild alone picks the fix up; the `go`
+  directive in `go.mod` is raised to 1.27.3 so CI and local scans can no longer
+  run on an older patch release.
+- The rebuilt distroless `static-debian13` base no longer ships the "emSign ECC
+  Root CA - G3" root, which the 2.0.8 image still trusted. This matches the
+  eMudhra distrust in cert-manager 1.21.3.
+- GO-2026-6505 (CVE-2026-81870, LOW), left open in 2.0.8, is cleared: the
+  OpenTelemetry modules move to 1.45.0 as cert-manager 1.21.3's transitive
+  minimums.
+- Known, not reachable: GO-2026-5932 in `golang.org/x/crypto/openpgp`. That
+  package is not compiled into the binary, and the fix exists only as an
+  unreleased commit; a tagged `x/crypto` release will carry it.
+
+### Changed
+
+- cert-manager 1.21.3 and `golang.org/x/net` 0.62.0. The `k8s.io/*` libraries
+  stay on 0.36.5, the minor that cert-manager 1.21.3 requires.
+- GitHub Actions: `azure/setup-helm` 5.1.0, `docker/login-action` 4.8.0 and
+  `sigstore/cosign-installer` 4.1.3.
+
 ## 2.0.8
 
 Security release. No functional changes to the solver; the rendered manifests

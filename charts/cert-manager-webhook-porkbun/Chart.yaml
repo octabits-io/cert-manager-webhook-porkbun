@@ -4,10 +4,10 @@ description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkb
 type: application
 
 # Chart version. Bumped independently of appVersion.
-version: 2.0.8
+version: 2.0.9
 
 # Version of the webhook image this chart deploys by default.
-appVersion: "2.0.8"
+appVersion: "2.0.9"
 
 home: https://github.com/octabits-io/cert-manager-webhook-porkbun
 sources:
@@ -48,7 +48,7 @@ annotations:
   artifacthub.io/operator: "false"
   artifacthub.io/images: |
     - name: cert-manager-webhook-porkbun
-      image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.8
+      image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.9
       platforms:
         - linux/amd64
         - linux/arm64
@@ -67,8 +67,8 @@ annotations:
   # keep unreleased work out of it until the bump lands.
   artifacthub.io/changes: |
     - kind: security
-      description: golang.org/x/net bumped to 0.61.0, clearing five reachable HTTP/2 server denial-of-service advisories (GO-2026-6617, -6603, -6611, -6612, -6610)
+      description: Image rebuilt on Go 1.27.3, whose crypto/x509 rejects certificate chains through the compromised eMudhra intermediates (GO-2026-6809, CVE-2026-111943)
     - kind: security
-      description: Image rebuilt on Go 1.27.2, clearing seven standard library advisories in net/http, net/textproto, crypto/tls and html/template
+      description: OpenTelemetry modules moved to 1.45.0 with cert-manager 1.21.3, clearing GO-2026-6505 (LOW, otlptrace logging exporter endpoint URLs)
     - kind: changed
-      description: k8s.io libraries updated to 0.36.5, staying on the minor cert-manager 1.21.2 pins
+      description: cert-manager updated to 1.21.3 and golang.org/x/net to 0.62.0; the k8s.io libraries stay on 0.36.5, the minor cert-manager pins
