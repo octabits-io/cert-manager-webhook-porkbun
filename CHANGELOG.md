@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## 2.0.10
+
+Bug-fix release for the Porkbun API client and credential handling. The
+rendered manifests differ from 2.0.9 only in the version labels and the image
+tag.
 
 ### Fixed
 
