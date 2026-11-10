@@ -344,6 +344,39 @@ func TestEmptySecretValueIsRejected(t *testing.T) {
 	}
 }
 
+func TestWhitespaceOnlySecretValueIsRejected(t *testing.T) {
+	secret := credsSecret()
+	secret.Data["api-key"] = []byte(" \n")
+	s := testSolver(t, &fakeAPI{}, secret)
+
+	if err := s.Present(challenge(t, defaultConfig(), "_acme-challenge.reynt.co.", "reynt.co.", "tok")); err == nil {
+		t.Fatal("expected an error for a whitespace-only credential")
+	}
+}
+
+// A Secret created from a file, or with `echo` rather than `echo -n`, ends in
+// a newline. Sent verbatim it is an opaque authentication failure.
+func TestSecretValuesAreTrimmed(t *testing.T) {
+	secret := credsSecret()
+	secret.Data["api-key"] = []byte("pk1_abc\n")
+	secret.Data["secret-key"] = []byte("  sk1_xyz\r\n")
+
+	s := testSolver(t, &fakeAPI{}, secret)
+	var gotSecret, gotAPI string
+	api := &fakeAPI{}
+	s.newAPI = func(secretAPIKey, apiKey string) dnsAPI {
+		gotSecret, gotAPI = secretAPIKey, apiKey
+		return api
+	}
+
+	if err := s.Present(challenge(t, defaultConfig(), "_acme-challenge.reynt.co.", "reynt.co.", "tok")); err != nil {
+		t.Fatalf("Present: %v", err)
+	}
+	if gotAPI != "pk1_abc" || gotSecret != "sk1_xyz" {
+		t.Errorf("credentials = (%q, %q), want trimmed (pk1_abc, sk1_xyz)", gotAPI, gotSecret)
+	}
+}
+
 func TestAPIErrorIsWrappedWithContext(t *testing.T) {
 	api := &fakeAPI{retrieveErr: errors.New("porkbun api: Invalid API key. (002)")}
 	s := testSolver(t, api, credsSecret())

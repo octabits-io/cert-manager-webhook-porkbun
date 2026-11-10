@@ -15,6 +15,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -322,16 +323,21 @@ func (s *Solver) secretValue(ctx context.Context, namespace string, ref *corev1.
 		return "", fmt.Errorf("reading secret %s/%s: %w", namespace, ref.Name, err)
 	}
 
-	value, ok := secret.Data[ref.Key]
+	raw, ok := secret.Data[ref.Key]
 	if !ok {
 		return "", fmt.Errorf("secret %s/%s has no key %q", namespace, ref.Name, ref.Key)
 	}
 
-	if len(value) == 0 {
+	// Trim surrounding whitespace. A Secret made from a file, or from `echo`
+	// without -n, carries a trailing newline; Porkbun keys never contain
+	// whitespace, and sending one verbatim is an opaque authentication
+	// failure.
+	value := strings.TrimSpace(string(raw))
+	if value == "" {
 		return "", fmt.Errorf("secret %s/%s key %q is empty", namespace, ref.Name, ref.Key)
 	}
 
-	return string(value), nil
+	return value, nil
 }
 
 // lockDomain acquires the per-domain lock and returns its release function.

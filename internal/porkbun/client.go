@@ -31,6 +31,7 @@ import (
 	"math/rand/v2"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -72,6 +73,9 @@ type APIError struct {
 	// Message is the value of the API's `message` field, if present. This is
 	// the only place Porkbun explains *why* a call failed.
 	Message string
+	// RetryAfter is the delay the server asked for in a Retry-After header,
+	// zero if it sent none or sent a form other than whole seconds.
+	RetryAfter time.Duration
 }
 
 func (e *APIError) Error() string {
@@ -196,8 +200,12 @@ func New(secretAPIKey, apiKey string, opts ...Option) *Client {
 				return http.ErrUseLastResponse
 			},
 		},
-		maxAttempts: 4,
-		backoffBase: 500 * time.Millisecond,
+		// Five attempts with a one-second base back off for up to ~15s in
+		// total. The previous four attempts at 500ms were over within ~3.5s,
+		// short enough for every retry to land inside the same rate-limit
+		// window.
+		maxAttempts: 5,
+		backoffBase: time.Second,
 		sleep:       sleepCtx,
 	}
 
@@ -346,7 +354,7 @@ func (c *Client) do(ctx context.Context, path string, payload any, out any, env 
 	var lastErr error
 	for attempt := 1; attempt <= c.maxAttempts; attempt++ {
 		if attempt > 1 {
-			if err := c.sleep(ctx, c.backoff(attempt)); err != nil {
+			if err := c.sleep(ctx, c.retryDelay(attempt, lastErr)); err != nil {
 				// Context expired while backing off; report the underlying
 				// failure rather than the context error, which is more useful.
 				return fmt.Errorf("%w (giving up after %d attempts: %w)", lastErr, attempt-1, err)
@@ -359,7 +367,7 @@ func (c *Client) do(ctx context.Context, path string, payload any, out any, env 
 		}
 		lastErr = err
 
-		if !retryable(err) {
+		if !retryable(ctx, err) {
 			return err
 		}
 	}
@@ -395,7 +403,10 @@ func (c *Client) attempt(ctx context.Context, endpoint string, body []byte, out 
 	// HTML error pages and empty bodies for some failures, and decoding those
 	// as JSON produces an error that hides the real cause.
 	if resp.StatusCode != http.StatusOK {
-		apiErr := &APIError{HTTPStatus: resp.StatusCode}
+		apiErr := &APIError{
+			HTTPStatus: resp.StatusCode,
+			RetryAfter: parseRetryAfter(resp.Header.Get("Retry-After")),
+		}
 		// The body is often still JSON with a useful message; if not, fall
 		// back to a truncated excerpt so the operator sees something.
 		var e statusEnvelope
@@ -467,6 +478,38 @@ func (c *Client) backoff(attempt int) time.Duration {
 	return half + time.Duration(rand.Int64N(int64(half)+1))
 }
 
+// maxRetryAfter caps how long a server-supplied Retry-After is honoured, so a
+// hostile or confused endpoint cannot park a challenge for the whole call
+// budget.
+const maxRetryAfter = 30 * time.Second
+
+// retryDelay is the wait before the given attempt: the jittered backoff, or
+// the server's Retry-After when that asks for longer.
+func (c *Client) retryDelay(attempt int, lastErr error) time.Duration {
+	d := c.backoff(attempt)
+
+	var ae *APIError
+	if errors.As(lastErr, &ae) && ae.RetryAfter > d {
+		d = min(ae.RetryAfter, maxRetryAfter)
+	}
+
+	return d
+}
+
+// parseRetryAfter reads the delay-seconds form of a Retry-After header. The
+// HTTP-date form is not worth the clock-skew handling for this API and is
+// treated as absent.
+func parseRetryAfter(v string) time.Duration {
+	secs, err := strconv.Atoi(strings.TrimSpace(v))
+	if err != nil || secs <= 0 {
+		return 0
+	}
+	if secs > int(maxRetryAfter/time.Second) {
+		return maxRetryAfter
+	}
+	return time.Duration(secs) * time.Second
+}
+
 func sleepCtx(ctx context.Context, d time.Duration) error {
 	t := time.NewTimer(d)
 	defer t.Stop()
@@ -484,9 +527,13 @@ type transportError struct{ err error }
 func (e *transportError) Error() string { return "porkbun: " + e.err.Error() }
 func (e *transportError) Unwrap() error { return e.err }
 
-func retryable(err error) bool {
-	// A cancelled or expired context is never worth retrying.
-	if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+func retryable(ctx context.Context, err error) bool {
+	// A cancelled or expired *caller* context is never worth retrying. Ask
+	// the context rather than inspecting err: the http.Client's own
+	// per-request timeout also satisfies errors.Is(err,
+	// context.DeadlineExceeded), and that one is a transient transport
+	// failure with call budget still left.
+	if ctx.Err() != nil {
 		return false
 	}
 

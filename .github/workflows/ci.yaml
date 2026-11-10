@@ -10,12 +10,17 @@ on:
   schedule:
     - cron: "0 6 * * 1"
   workflow_dispatch:
+  # The release workflow calls this as its gate, so a tag cannot publish an
+  # image or chart that these jobs would have failed.
+  workflow_call:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  # github.workflow is the *caller's* name under workflow_call, which keeps a
+  # release's gate run out of the group of a push-triggered CI run.
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:

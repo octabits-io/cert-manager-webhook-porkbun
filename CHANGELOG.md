@@ -1,5 +1,37 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- A request that hits the client's 30-second per-request timeout is now
+  retried. It was classified as an expired call and failed the whole
+  `Present`/`CleanUp` on one stalled connection, with most of the two-minute
+  budget unused.
+- Credential values read from the Secret are trimmed of surrounding
+  whitespace. A Secret created from a file, or with `echo` rather than
+  `echo -n`, carries a trailing newline that Porkbun answered with an opaque
+  authentication failure. A whitespace-only value is rejected as empty.
+
+### Changed
+
+- Retries against the Porkbun API back off for longer: five attempts from a
+  one-second base (up to about 15 seconds in total) instead of four from
+  500 ms (about 3.5 seconds), which was short enough for every attempt to land
+  in one rate-limit window. A `Retry-After` header in whole seconds is
+  honoured, capped at 30 seconds.
+
+### Release process
+
+- The release workflow runs the full CI suite against the tagged commit and
+  publishes nothing unless it passes. Publishing used to start on the tag push
+  alone.
+- The release fails up front when the tag does not match `Chart.yaml`'s
+  `version`, `appVersion` and image annotation, or has no CHANGELOG section.
+- The Helm repository index is merged rather than regenerated, so a release no
+  longer resets the `created` date of every earlier chart version. A chart
+  archive that is already published is never replaced.
+
 ## 2.0.9
 
 Security release. No functional changes to the solver; the rendered manifests

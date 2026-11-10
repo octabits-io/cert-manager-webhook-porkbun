@@ -384,3 +384,70 @@ func TestBackoffIsBoundedAndJittered(t *testing.T) {
 		t.Error("backoff produced no variation; jitter is not being applied")
 	}
 }
+
+// The http.Client's own per-request timeout satisfies errors.Is(err,
+// context.DeadlineExceeded) just as an expired caller context does. Only the
+// latter means the call is out of budget; a single stalled connection must
+// still be retried.
+func TestRetriesPerRequestTimeout(t *testing.T) {
+	var calls atomic.Int32
+	c := newTestClient(t, func(w http.ResponseWriter, _ *http.Request) {
+		if calls.Add(1) == 1 {
+			time.Sleep(300 * time.Millisecond)
+			return
+		}
+		_, _ = io.WriteString(w, `{"status":"SUCCESS","records":[]}`)
+	}, WithHTTPClient(&http.Client{Timeout: 50 * time.Millisecond}))
+
+	if _, err := c.RetrieveRecordsByNameType(context.Background(), "example.com", "TXT", "x"); err != nil {
+		t.Fatalf("a per-request timeout should be retried, got: %v", err)
+	}
+	if got := calls.Load(); got != 2 {
+		t.Errorf("made %d calls, want 2", got)
+	}
+}
+
+func TestRetryAfterIsHonoured(t *testing.T) {
+	var calls atomic.Int32
+	var slept []time.Duration
+	c := newTestClient(t, func(w http.ResponseWriter, _ *http.Request) {
+		switch calls.Add(1) {
+		case 1:
+			w.Header().Set("Retry-After", "7")
+			w.WriteHeader(http.StatusServiceUnavailable)
+		case 2:
+			// Absurd values are capped rather than obeyed.
+			w.Header().Set("Retry-After", "86400")
+			w.WriteHeader(http.StatusServiceUnavailable)
+		default:
+			_, _ = io.WriteString(w, `{"status":"SUCCESS","records":[]}`)
+		}
+	}, withSleep(func(_ context.Context, d time.Duration) error {
+		slept = append(slept, d)
+		return nil
+	}))
+
+	if _, err := c.RetrieveRecordsByNameType(context.Background(), "example.com", "TXT", "x"); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	want := []time.Duration{7 * time.Second, maxRetryAfter}
+	if len(slept) != len(want) || slept[0] != want[0] || slept[1] != want[1] {
+		t.Errorf("slept %v, want %v", slept, want)
+	}
+}
+
+func TestParseRetryAfter(t *testing.T) {
+	for in, want := range map[string]time.Duration{
+		"":                              0,
+		"5":                             5 * time.Second,
+		" 5 ":                           5 * time.Second,
+		"0":                             0,
+		"-3":                            0,
+		"Wed, 21 Oct 2026 07:28:00 GMT": 0,
+		"999999999999":                  maxRetryAfter,
+	} {
+		if got := parseRetryAfter(in); got != want {
+			t.Errorf("parseRetryAfter(%q) = %v, want %v", in, got, want)
+		}
+	}
+}
