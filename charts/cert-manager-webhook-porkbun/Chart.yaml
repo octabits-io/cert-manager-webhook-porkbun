@@ -4,10 +4,10 @@ description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkb
 type: application
 
 # Chart version. Bumped independently of appVersion.
-version: 2.0.10
+version: 2.0.11
 
 # Version of the webhook image this chart deploys by default.
-appVersion: "2.0.10"
+appVersion: "2.0.11"
 
 home: https://github.com/octabits-io/cert-manager-webhook-porkbun
 sources:
@@ -44,11 +44,11 @@ annotations:
   artifacthub.io/category: security
   artifacthub.io/license: Apache-2.0
   artifacthub.io/prerelease: "false"
-  artifacthub.io/containsSecurityUpdates: "false"
+  artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/operator: "false"
   artifacthub.io/images: |
     - name: cert-manager-webhook-porkbun
-      image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.10
+      image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.11
       platforms:
         - linux/amd64
         - linux/arm64
@@ -66,9 +66,7 @@ annotations:
   # containsSecurityUpdates, or it silently describes the wrong release — and
   # keep unreleased work out of it until the bump lands.
   artifacthub.io/changes: |
-    - kind: fixed
-      description: A Porkbun API request that hits the 30-second per-request timeout is now retried instead of failing the whole challenge
-    - kind: fixed
-      description: Credential values read from the Secret are trimmed, so a trailing newline no longer causes an opaque authentication failure
-    - kind: changed
-      description: Longer retry backoff against the Porkbun API (five attempts, about 15 seconds in total), honouring Retry-After up to 30 seconds
+    - kind: security
+      description: Image rebuilt on Go 1.27.4, fixing an HTTP/1 server crash from a MaxBytesReader header race in net/http (GO-2026-6859), reachable through the webhook's serving endpoint
+    - kind: security
+      description: OpenTelemetry SDK and trace modules moved to 1.47.0, clearing CVE-2026-128085 (MEDIUM, attribute truncation bypass; not reachable here)

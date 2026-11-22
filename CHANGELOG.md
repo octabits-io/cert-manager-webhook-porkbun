@@ -1,5 +1,24 @@
 # Changelog
 
+## 2.0.11
+
+Security release. The rendered manifests differ from 2.0.10 only in the
+version labels and the image tag.
+
+### Security
+
+- The image is built on Go 1.27.4. The 2.0.10 binary was built on Go 1.27.3,
+  whose `net/http` server can crash from a header race in `MaxBytesReader`
+  (GO-2026-6859). govulncheck reports it reachable through the webhook's
+  serving endpoint; in a standard install only the kube-apiserver can reach
+  that port through the aggregation layer. The `go` directive is raised to
+  1.27.4 so a build on an older toolchain fails rather than shipping it.
+- `go.opentelemetry.io/otel/sdk` and `otel/trace` move from 1.45.0 to 1.47.0,
+  clearing CVE-2026-128085 (MEDIUM, denial of service by getting around
+  attribute truncation). They come in through cert-manager and
+  `k8s.io/apiserver`; tracing is not configured, so govulncheck does not report
+  it reachable.
+
 ## 2.0.10
 
 Bug-fix release for the Porkbun API client and credential handling. The
