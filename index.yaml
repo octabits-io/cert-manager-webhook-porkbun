@@ -4,6 +4,65 @@ entries:
   - annotations:
       artifacthub.io/category: security
       artifacthub.io/changes: |
+        - kind: security
+          description: Image rebuilt on Go 1.27.4, fixing an HTTP/1 server crash from a MaxBytesReader header race in net/http (GO-2026-6859), reachable through the webhook's serving endpoint
+        - kind: security
+          description: OpenTelemetry SDK and trace modules moved to 1.47.0, clearing CVE-2026-128085 (MEDIUM, attribute truncation bypass; not reachable here)
+      artifacthub.io/containsSecurityUpdates: "true"
+      artifacthub.io/images: |
+        - name: cert-manager-webhook-porkbun
+          image: ghcr.io/octabits-io/cert-manager-webhook-porkbun:2.0.11
+          platforms:
+            - linux/amd64
+            - linux/arm64
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun
+        - name: support
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun/issues
+        - name: changelog
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun/blob/main/CHANGELOG.md
+        - name: container image
+          url: https://github.com/octabits-io/cert-manager-webhook-porkbun/pkgs/container/cert-manager-webhook-porkbun
+      artifacthub.io/operator: "false"
+      artifacthub.io/prerelease: "false"
+    apiVersion: v2
+    appVersion: 2.0.11
+    created: "2026-11-22T18:06:47.987571494Z"
+    description: cert-manager ACME DNS-01 solver webhook for domains hosted at Porkbun,
+      for Let's Encrypt wildcard certificates
+    digest: 23d742f3d5b6548ed6c85c6c1beaf6b45c5ee04b687b810ffa1aed1b2ee44581
+    home: https://github.com/octabits-io/cert-manager-webhook-porkbun
+    icon: https://porkbun.octabits.io/favicon.svg
+    keywords:
+    - cert-manager
+    - cert-manager-webhook
+    - acme
+    - dns01
+    - dns-01
+    - porkbun
+    - letsencrypt
+    - lets-encrypt
+    - wildcard-certificate
+    - tls
+    - certificates
+    - webhook
+    - solver
+    maintainers:
+    - email: contact@dk2.de
+      name: Daniel Hartmann
+      url: https://github.com/octabits-io
+    name: cert-manager-webhook-porkbun
+    sources:
+    - https://github.com/octabits-io/cert-manager-webhook-porkbun
+    type: application
+    urls:
+    - https://porkbun.octabits.io/cert-manager-webhook-porkbun-2.0.11.tgz
+    version: 2.0.11
+  - annotations:
+      artifacthub.io/category: security
+      artifacthub.io/changes: |
         - kind: fixed
           description: A Porkbun API request that hits the 30-second per-request timeout is now retried instead of failing the whole challenge
         - kind: fixed
@@ -596,4 +655,4 @@ entries:
     urls:
     - https://porkbun.octabits.io/cert-manager-webhook-porkbun-2.0.0.tgz
     version: 2.0.0
-generated: "2026-11-10T14:14:29.393361605Z"
+generated: "2026-11-22T18:06:47.986746956Z"
